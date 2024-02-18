@@ -1,44 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:gkb12_app/ui/pages/auth_stuff_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<AuthPage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<AuthPage> {
+class AuthStuffPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                })),
+        actions: [
+          Image.asset(
             "assets/icons/logo.jpg",
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AuthStuffPage()));
-            },
-            child: Text(
-              'Войти как сотрудник',
-              style: GoogleFonts.ibmPlexSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0,
-                  color: Colors.grey),
-            ),
-          ),
+
+          //more widgets to place here
         ],
       ),
       body: Center(
@@ -48,7 +30,7 @@ class _MyHomePageState extends State<AuthPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Пожалуйста, введите код пациента',
+              'Пожалуйста, введите код сотрудника',
               textAlign: TextAlign.center,
               style: GoogleFonts.ibmPlexSans(
                   fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
@@ -112,7 +94,6 @@ class _MyHomePageState extends State<AuthPage> {
                   },
                   onChanged: (value) {
                     debugPrint(value);
-                    setState(() {});
                   },
                 ),
               ),
@@ -120,14 +101,9 @@ class _MyHomePageState extends State<AuthPage> {
             Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AuthStuffPage()));
-                    },
+                    onPressed: () {},
                     child: Text(
-                      'Войти',
+                      'Войти как сотрудник',
                       style: GoogleFonts.ibmPlexSans(
                           fontSize: 20,
                           letterSpacing: 0,
@@ -139,7 +115,7 @@ class _MyHomePageState extends State<AuthPage> {
                       onSurface: Colors.red,
                       backgroundColor: Colors.blueAccent[700],
                     ))),
-            Text('Код будет выдан Вам в регистратуре \nНе получили код?',
+            Text('Не получили код?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ibmPlexSans(
                     fontSize: 18,
@@ -151,42 +127,6 @@ class _MyHomePageState extends State<AuthPage> {
                     fontSize: 18,
                     letterSpacing: 0,
                     fontWeight: FontWeight.w500)),
-            Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                child: OutlinedButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Посмотреть адрес и контакты',
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 19,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    style: TextButton.styleFrom(
-                        minimumSize: Size.fromHeight(50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        side: BorderSide(width: 2, color: Colors.black),
-                        foregroundColor: Colors.black))),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(),
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                  borderRadius: BorderRadius.circular(5.0)),
-              child: Text(
-                'Чек-лист text text text text text text text text text text text text text text text text',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 20,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w500),
-              ),
-            )
           ],
         ),
       )),
