@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gkb12_app/ui/pages/auth_stuff_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gkb12_app/ui/pages/patient_before_operation_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key, required this.title});
@@ -124,7 +125,8 @@ class _MyHomePageState extends State<AuthPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AuthStuffPage()));
+                              builder: (context) =>
+                                  PatientBeforeOperationPage()));
                     },
                     child: Text(
                       'Войти',
@@ -133,12 +135,13 @@ class _MyHomePageState extends State<AuthPage> {
                           letterSpacing: 0,
                           fontWeight: FontWeight.w500),
                     ),
-                    style: TextButton.styleFrom(
-                      primary: Colors.white,
-                      minimumSize: Size.fromHeight(50),
-                      onSurface: Colors.red,
-                      backgroundColor: Colors.blueAccent[700],
-                    ))),
+                    style: OutlinedButton.styleFrom(
+                        primary: Colors.white,
+                        minimumSize: Size.fromHeight(50),
+                        onSurface: Colors.red,
+                        backgroundColor: Colors.blueAccent[700],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10))))),
             Text('Код будет выдан Вам в регистратуре \nНе получили код?',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ibmPlexSans(
