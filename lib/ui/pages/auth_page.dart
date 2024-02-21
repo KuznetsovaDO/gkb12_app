@@ -51,8 +51,7 @@ class _MyHomePageState extends State<AuthPage> {
             Text(
               'Пожалуйста, введите код пациента',
               textAlign: TextAlign.center,
-              style: GoogleFonts.ibmPlexSans(
-                  fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
+              style: Theme.of(context).textTheme.headlineLarge,
             ),
             Container(
                 margin: EdgeInsets.symmetric(vertical: 30),
@@ -128,26 +127,14 @@ class _MyHomePageState extends State<AuthPage> {
                               builder: (context) =>
                                   PatientBeforeOperationPage()));
                     },
+                    style: Theme.of(context).outlinedButtonTheme.style,
                     child: Text(
                       'Войти',
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 20,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    style: OutlinedButton.styleFrom(
-                        primary: Colors.white,
-                        minimumSize: Size.fromHeight(50),
-                        onSurface: Colors.red,
-                        backgroundColor: Colors.blueAccent[700],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))))),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ))),
             Text('Код будет выдан Вам в регистратуре \nНе получили код?',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 18,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w700)),
+                style: Theme.of(context).textTheme.bodyMedium),
             Text('+8999999999',
                 textAlign: TextAlign.center,
                 style: GoogleFonts.ibmPlexSans(
@@ -158,26 +145,28 @@ class _MyHomePageState extends State<AuthPage> {
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: OutlinedButton(
                     onPressed: () {},
-                    child: Text(
-                      'Посмотреть адрес и контакты',
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 19,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
-                    ),
                     style: TextButton.styleFrom(
-                        minimumSize: Size.fromHeight(50),
+                        elevation: 0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        side: BorderSide(width: 2, color: Colors.black),
-                        foregroundColor: Colors.black))),
+                        side: BorderSide(width: 1.5, color: Colors.black),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black),
+                    child: Text(
+                      'Посмотреть адрес и контакты',
+                      style: GoogleFonts.ibmPlexSans(
+                          fontSize: 20,
+                          letterSpacing: 0,
+                          fontWeight: FontWeight.w500),
+                    ))),
             Container(
               width: MediaQuery.of(context).size.width,
               margin: EdgeInsets.symmetric(),
               padding: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                   border: Border.all(
+                    width: 1.5,
                     color: Colors.grey,
                   ),
                   borderRadius: BorderRadius.circular(5.0)),

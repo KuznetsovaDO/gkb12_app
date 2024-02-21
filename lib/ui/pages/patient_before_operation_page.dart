@@ -25,7 +25,7 @@ class PatientBeforeOperationPage extends StatelessWidget {
       ),
       body: Center(
           child: Container(
-        padding: EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -39,26 +39,30 @@ class PatientBeforeOperationPage extends StatelessWidget {
                               builder: (context) =>
                                   PatientAfterOperationPage()));
                     },
+                    style: Theme.of(context).outlinedButtonTheme.style,
                     child: Text(
                       'После операции',
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 20,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    style: TextButton.styleFrom(
-                        primary: Colors.white,
-                        minimumSize: Size.fromHeight(50),
-                        onSurface: Colors.red,
-                        backgroundColor: Colors.blueAccent[700],
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))))),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ))),
             Text('Пожалуйста, нажмите на эту кнопку после операции',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 18,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w500)),
+                style: Theme.of(context).textTheme.bodyMedium),
+            Container(
+                margin: EdgeInsets.symmetric(vertical: 20),
+                child: OutlinedButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        side: BorderSide(width: 1.5, color: Colors.black),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black),
+                    child: Text(
+                      'Написать врачу',
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ))),
             Container(
               width: MediaQuery.of(context).size.width,
               margin: EdgeInsets.symmetric(vertical: 20),
@@ -69,12 +73,9 @@ class PatientBeforeOperationPage extends StatelessWidget {
                   ),
                   borderRadius: BorderRadius.circular(10.0)),
               child: Text(
-                'Рекомендации после операции text text text text text text text text text text text text text text text text',
+                'Рекомендации до операции text text text text text text text text text text text text text text text text',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 20,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.w500),
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             )
           ],

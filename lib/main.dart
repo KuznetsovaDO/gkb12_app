@@ -15,10 +15,39 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        textTheme: GoogleFonts.ibmPlexSansCondensedTextTheme(),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+            style: OutlinedButton.styleFrom(
+                shadowColor: Colors.grey.shade400,
+                elevation: 15,
+                backgroundColor: Color.fromARGB(255, 0, 60, 210),
+                foregroundColor: Colors.white,
+                minimumSize: const Size.fromHeight(60),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)))),
+        primaryColor: const Color(0x9C0042EB),
+        textTheme: TextTheme(
+            titleLarge: GoogleFonts.ibmPlexSans(
+                fontSize: 20,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),
+            headlineLarge: GoogleFonts.ibmPlexSans(
+                fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
+            labelMedium: GoogleFonts.ibmPlexSans(
+                fontSize: 20,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),
+            bodyMedium: GoogleFonts.ibmPlexSans(
+                fontSize: 18, letterSpacing: 0, fontWeight: FontWeight.w600)),
         useMaterial3: true,
       ),
       home: const AuthPage(title: 'Flutter Demo Home Page'),
     );
   }
 }
+
+
+
+// Usage:
+

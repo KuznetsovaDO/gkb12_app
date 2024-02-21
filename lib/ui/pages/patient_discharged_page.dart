@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
+import 'package:gkb12_app/ui/pages/evening_form_page.dart';
 
-class PatientAfterOperationPage extends StatefulWidget {
+class PatientDischargedPage extends StatefulWidget {
   @override
-  _PatientAfterOperationPageState createState() =>
-      _PatientAfterOperationPageState();
+  _PatientDischargedPageState createState() => _PatientDischargedPageState();
 }
 
-class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
+class _PatientDischargedPageState extends State<PatientDischargedPage> {
   final formKey = GlobalKey<FormState>();
   int selectedButtonIndex = 0;
   @override
@@ -17,7 +16,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
     List<bool> _isSelected = [false, true];
     return Scaffold(
         appBar: AppBar(
-          title: Text('Статус: после операции'),
+          title: Text('Статус: выписан(-а)'),
           leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
@@ -37,56 +36,43 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text('Как вы себя чувствуете?'),
-                  CustomToggleButtons(
-                    initialSelectedIndex: selectedButtonIndex,
-                    onPressed: (int index) {
-                      setState(() {
-                        selectedButtonIndex = index;
-                      });
-                    },
-                    isSmiles: true,
-                  ),
-                  const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 60,
-                            child: Text(
-                              'Жалоб нет',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 60,
-                            child: Text(
-                              'Очень плохо',
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
+                  OutlinedButton(
+                      style: Theme.of(context).outlinedButtonTheme.style,
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EveningFormPage()));
+                      },
+                      child: Text(
+                        'Пройти форму вечер',
+                        style: Theme.of(context).textTheme.labelMedium,
                       )),
+                  const Text(
+                    'Пожалуйста, нажмите эту кнопку после 20:00 в день выписки из больницы',
+                    textAlign: TextAlign.center,
+                  ),
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
-                      child: ElevatedButton(
+                      child: OutlinedButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        PatientDischargedPage()));
+                                    builder: (context) => EveningFormPage()));
                           },
-                          child: Text('Я дома',
-                              style: Theme.of(context).textTheme.labelMedium),
-                          style: Theme.of(context).outlinedButtonTheme.style)),
-                  Text('Пожалуйста, нажмите эту кнопку после прибытия домой',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 18,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w700)),
+                          style: TextButton.styleFrom(
+                              elevation: 0,
+                              side: BorderSide(width: 1.5, color: Colors.black),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black),
+                          child: Text(
+                            'Написать врачу',
+                            style: GoogleFonts.ibmPlexSans(
+                                fontSize: 20,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.w500),
+                          ))),
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: OutlinedButton(
@@ -97,7 +83,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black),
                           child: Text(
-                            'Написать врачу',
+                            'Оценить качество обслуживания',
                             style: GoogleFonts.ibmPlexSans(
                                 fontSize: 20,
                                 letterSpacing: 0,
