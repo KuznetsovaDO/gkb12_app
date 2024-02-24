@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
+import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 
 class PatientAfterOperationPage extends StatefulWidget {
   @override
@@ -16,28 +17,41 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
   Widget build(BuildContext context) {
     List<bool> _isSelected = [false, true];
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Статус: после операции'),
-          leading: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  })),
-          actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
-
-            //more widgets to place here
-          ],
-        ),
-        body: Center(
+      appBar: AppBar(
+        title: Text('Статус: после операции'),
+        leading: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back,
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                })),
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                Icons.notifications,
+                size: 30,
+              ))
+        ],
+      ),
+      body: SingleChildScrollView(
           child: Container(
-              margin: EdgeInsets.all(15),
+              margin: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text('Как вы себя чувствуете?'),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(0, 25, 0, 10),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Как вы себя чувствуете?',
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ))),
                   CustomToggleButtons(
                     initialSelectedIndex: selectedButtonIndex,
                     onPressed: (int index) {
@@ -47,8 +61,8 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                     },
                     isSmiles: true,
                   ),
-                  const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -57,6 +71,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                             child: Text(
                               'Жалоб нет',
                               textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
                           SizedBox(
@@ -64,6 +79,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                             child: Text(
                               'Очень плохо',
                               textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
                           ),
                         ],
@@ -78,51 +94,76 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                                     builder: (context) =>
                                         PatientDischargedPage()));
                           },
-                          child: Text('Я дома',
-                              style: Theme.of(context).textTheme.labelMedium),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Я дома',
+                                ),
+                                Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Icon(
+                                      Icons.home,
+                                      size: 30,
+                                    ))
+                              ]),
                           style: Theme.of(context).outlinedButtonTheme.style)),
                   Text('Пожалуйста, нажмите эту кнопку после прибытия домой',
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 18,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w700)),
+                      style: Theme.of(context).textTheme.bodyMedium),
                   Container(
-                      margin: EdgeInsets.symmetric(vertical: 20),
+                      margin: EdgeInsets.symmetric(vertical: 35),
                       child: OutlinedButton(
                           onPressed: () {},
                           style: TextButton.styleFrom(
+                              textStyle:
+                                  Theme.of(context).textTheme.labelMedium,
                               elevation: 0,
-                              side: BorderSide(width: 1.5, color: Colors.black),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              side: BorderSide(width: 2, color: Colors.black),
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black),
-                          child: Text(
-                            'Написать врачу',
-                            style: GoogleFonts.ibmPlexSans(
-                                fontSize: 20,
-                                letterSpacing: 0,
-                                fontWeight: FontWeight.w500),
-                          ))),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(vertical: 25),
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Text(
-                      'Чек-лист text text text text text text text text text text text text text text text text',
-                      textAlign: TextAlign.center,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Написать врачу',
+                                ),
+                                Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Icon(
+                                      Icons.create,
+                                      size: 25,
+                                    ))
+                              ]))),
+                  CustomRichTextContainer(
+                      richText: RichText(
+                    text: TextSpan(
+                      text: 'Важная информация\n\n',
                       style: GoogleFonts.ibmPlexSans(
-                          fontSize: 20,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0,
+                        color: Colors.black,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text:
+                              'Сейчас вы находитесь в палате под наблюдением медицинского персонала',
+                          style: GoogleFonts.ibmPlexSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ],
                     ),
-                  )
+                  ))
                 ],
-              )),
-        ));
+              ))),
+    );
   }
 }

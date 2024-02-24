@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/pages/evening_form_page.dart';
+import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 
 class PatientDischargedPage extends StatefulWidget {
   @override
@@ -25,29 +26,36 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                     Navigator.pop(context);
                   })),
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
+            IconButton(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.notifications,
+                  size: 30,
+                ))
 
             //more widgets to place here
           ],
         ),
-        body: Center(
+        body: SingleChildScrollView(
+            child: Center(
           child: Container(
               margin: EdgeInsets.all(15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  OutlinedButton(
-                      style: Theme.of(context).outlinedButtonTheme.style,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EveningFormPage()));
-                      },
-                      child: Text(
-                        'Пройти форму вечер',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      )),
+                  Container(
+                      margin: EdgeInsets.fromLTRB(0, 15, 0, 10),
+                      child: OutlinedButton(
+                          style: Theme.of(context).outlinedButtonTheme.style,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EveningFormPage()));
+                          },
+                          child: Text(
+                            'Пройти форму вечер',
+                          ))),
                   const Text(
                     'Пожалуйста, нажмите эту кнопку после 20:00 в день выписки из больницы',
                     textAlign: TextAlign.center,
@@ -55,24 +63,30 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => EveningFormPage()));
-                          },
+                          onPressed: () {},
                           style: TextButton.styleFrom(
+                              textStyle:
+                                  Theme.of(context).textTheme.labelMedium,
                               elevation: 0,
-                              side: BorderSide(width: 1.5, color: Colors.black),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              side: BorderSide(width: 2, color: Colors.black),
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.black),
-                          child: Text(
-                            'Написать врачу',
-                            style: GoogleFonts.ibmPlexSans(
-                                fontSize: 20,
-                                letterSpacing: 0,
-                                fontWeight: FontWeight.w500),
-                          ))),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Написать врачу',
+                                ),
+                                Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 8),
+                                    child: Icon(
+                                      Icons.create,
+                                      size: 25,
+                                    ))
+                              ]))),
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: OutlinedButton(
@@ -90,25 +104,37 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                                 fontWeight: FontWeight.w500),
                           ))),
                   Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(vertical: 25),
-                    padding: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Text(
-                      'Чек-лист text text text text text text text text text text text text text text text text',
-                      textAlign: TextAlign.center,
+                      margin: EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        'Пожалуйста, пройдите форму обратной связи, чтобы мы могли улучшить работу нашего стационара! Спасибо!',
+                        textAlign: TextAlign.center,
+                      )),
+                  CustomRichTextContainer(
+                      richText: RichText(
+                    text: TextSpan(
+                      text: 'Рекомендации\n\n',
                       style: GoogleFonts.ibmPlexSans(
-                          fontSize: 20,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0,
+                        color: Colors.black,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text:
+                              'В течение 2-3 недель после операции исключить:',
+                          style: GoogleFonts.ibmPlexSans(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ],
                     ),
-                  )
+                  ))
                 ],
               )),
-        ));
+        )));
   }
 }

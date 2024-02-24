@@ -20,6 +20,8 @@ class CustomToggleButtons extends StatefulWidget {
 
 class _CustomToggleButtonsState extends State<CustomToggleButtons> {
   int selectedButtonIndex = 0;
+  double paddingForButton = 8;
+  double paddingForSmile = 8;
   List<String> ImagePaths = [
     'assets/images/smile1.png',
     'assets/images/smile2.png',
@@ -46,13 +48,13 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
         isSelected: List.generate(5, (index) => index == selectedButtonIndex),
         children: [
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(paddingForButton),
               child: SizedBox(
                 width: 60, // <-- Your width
                 height: 60,
                 child: Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(paddingForSmile),
                     child: widget.isSmiles
                         ? Image.asset('assets/images/smile1.png')
                         : Text(
@@ -67,21 +69,21 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.lightGreen.shade200,
                         border: Border.all(
-                          width: 1,
+                          width: selectedButtonIndex == 0 ? 2 : 0.5,
                           color: selectedButtonIndex == 0
-                              ? Colors.green.shade700
+                              ? Colors.green.shade900
                               : Colors.grey,
                         ),
                         borderRadius: BorderRadius.circular(10.0))),
               )),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(paddingForButton),
               child: SizedBox(
                 width: 60, // <-- Your width
                 height: 60,
                 child: Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(paddingForSmile),
                     child: widget.isSmiles
                         ? Image.asset('assets/images/smile2.png')
                         : Text(
@@ -96,21 +98,21 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.lightGreen.shade100,
                         border: Border.all(
-                          width: 1,
+                          width: selectedButtonIndex == 1 ? 2 : 0.5,
                           color: selectedButtonIndex == 1
-                              ? Colors.green.shade500
+                              ? Colors.green.shade800
                               : Colors.grey,
                         ),
                         borderRadius: BorderRadius.circular(10.0))),
               )),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(paddingForButton),
               child: SizedBox(
                 width: 60, // <-- Your width
                 height: 60,
                 child: Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(paddingForSmile),
                     child: widget.isSmiles
                         ? Image.asset('assets/images/smile3.png')
                         : Text(
@@ -125,21 +127,21 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.yellow.shade100,
                         border: Border.all(
-                          width: 1,
+                          width: selectedButtonIndex == 2 ? 2 : 0.5,
                           color: selectedButtonIndex == 2
-                              ? Colors.yellow
+                              ? Colors.yellow.shade800
                               : Colors.grey,
                         ),
                         borderRadius: BorderRadius.circular(10.0))),
               )),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(paddingForButton),
               child: SizedBox(
                 width: 60, // <-- Your width
                 height: 60,
                 child: Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(paddingForSmile),
                     child: widget.isSmiles
                         ? Image.asset('assets/images/smile4.png')
                         : Text(
@@ -154,21 +156,21 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.orange.shade100,
                         border: Border.all(
-                          width: 1,
+                          width: selectedButtonIndex == 3 ? 2 : 0.5,
                           color: selectedButtonIndex == 3
-                              ? Colors.orange
+                              ? Colors.orange.shade800
                               : Colors.grey,
                         ),
                         borderRadius: BorderRadius.circular(10.0))),
               )),
           Padding(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.all(paddingForButton),
               child: SizedBox(
                 width: 60, // <-- Your width
                 height: 60,
                 child: Container(
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(4),
+                    padding: EdgeInsets.all(paddingForSmile),
                     child: widget.isSmiles
                         ? Image.asset('assets/images/smile5.png')
                         : Text(
@@ -183,7 +185,7 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.red.shade100,
                         border: Border.all(
-                          width: 1,
+                          width: selectedButtonIndex == 4 ? 2 : 0.5,
                           color: selectedButtonIndex == 4
                               ? Colors.red
                               : Colors.grey,
