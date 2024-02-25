@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,8 @@ import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 
 class PatientBeforeOperationPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
+  final String patientId;
+  PatientBeforeOperationPage({required this.patientId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,11 +42,7 @@ class PatientBeforeOperationPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PatientAfterOperationPage()));
+                          changeStatus(patientId, context);
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
                         child: Row(
@@ -116,5 +115,22 @@ class PatientBeforeOperationPage extends StatelessWidget {
             ),
           )),
         ));
+  }
+
+  Future<void> changeStatus(String documentId, BuildContext context) async {
+    try {
+      // Получаем ссылку на документ с заданным documentId
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection('patients').doc(documentId);
+
+      // Обновляем поля документа с помощью метода update
+      await documentReference.update({'Status': 'После операции'});
+      // ignore: use_build_context_synchronously
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => PatientAfterOperationPage()));
+      print('Поле документа успешно обновлено');
+    } catch (e) {
+      print('Ошибка при обновлении поля документа: $e');
+    }
   }
 }

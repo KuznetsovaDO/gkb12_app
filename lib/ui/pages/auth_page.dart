@@ -1,10 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/ui/pages/auth_stuff_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_before_operation_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+bool exist = false;
+String codeValue = '';
+CollectionReference patients =
+    FirebaseFirestore.instance.collection('patients');
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key, required this.title});
@@ -16,7 +23,28 @@ class AuthPage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<AuthPage> {
+  TextEditingController textEditingController = TextEditingController();
+  // ..text = "123456";
+
+  // ignore: close_sinks
+  StreamController<ErrorAnimationType>? errorController;
+
+  bool hasError = false;
+  String currentText = "";
   final formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    errorController = StreamController<ErrorAnimationType>();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    errorController!.close();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +76,7 @@ class _MyHomePageState extends State<AuthPage> {
         body: SingleChildScrollView(
           child: Center(
               child: Container(
-            margin: EdgeInsets.fromLTRB(15, 30, 15, 20),
+            margin: const EdgeInsets.fromLTRB(15, 30, 15, 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -58,7 +86,7 @@ class _MyHomePageState extends State<AuthPage> {
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 Container(
-                    margin: EdgeInsets.symmetric(vertical: 30),
+                    margin: const EdgeInsets.symmetric(vertical: 30),
                     child: Text(
                       'Код был ранее выдан Вам в регистратуре',
                       textAlign: TextAlign.center,
@@ -87,9 +115,10 @@ class _MyHomePageState extends State<AuthPage> {
                         if (v!.length < 3) {
                           return "Неверный код";
                         } else {
-                          return null;
+                          return "good";
                         }
                       },
+                      controller: textEditingController,
                       pinTheme: PinTheme(
                           shape: PinCodeFieldShape.box,
                           borderRadius: BorderRadius.circular(18),
@@ -112,12 +141,13 @@ class _MyHomePageState extends State<AuthPage> {
                       ],
                       onCompleted: (v) {
                         debugPrint() {}
+
                         ;
                       },
                       onChanged: (value) {
                         debugPrint(value);
                         setState(() {
-                          // codeValue = value;
+                          codeValue = value;
                         });
                       },
                     ),
@@ -127,11 +157,7 @@ class _MyHomePageState extends State<AuthPage> {
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PatientBeforeOperationPage()));
+                          checkDocument(codeValue, context);
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
                         child: Text(
@@ -199,16 +225,28 @@ class _MyHomePageState extends State<AuthPage> {
           )),
         ));
   }
+
+  Future<bool> checkDocument(String docID, BuildContext context) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('patients')
+          .doc(docID)
+          .get()
+          .then((doc) {
+        exist = doc.exists;
+        if (doc.exists) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PatientBeforeOperationPage(
+                        patientId: docID,
+                      )));
+        }
+      });
+      return exist;
+    } catch (e) {
+      // If any error
+      return false;
+    }
+  }
 }
-
-// Future<bool> checkDocument(String number) async {
-//   // Замените "collection" на ваш путь к коллекции, а "documentId" на ID документа, который вы хотите проверить
-//   DocumentSnapshot document =
-//       await FirebaseFirestore.instance.collection('patients').doc(number).get();
-
-//   if (document.exists) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
