@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
-import 'package:gkb12_app/ui/pages/evening_form_page.dart';
+import 'package:gkb12_app/ui/pages/evening_and_morning_form_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
+import 'package:gkb12_app/ui/pages/state_change_form.dart';
 
 class PatientDischargedPage extends StatefulWidget {
+  final bool isMorning; // Добавленное поле класса
+
+  PatientDischargedPage({this.isMorning = false});
   @override
   _PatientDischargedPageState createState() => _PatientDischargedPageState();
 }
@@ -12,6 +16,7 @@ class PatientDischargedPage extends StatefulWidget {
 class _PatientDischargedPageState extends State<PatientDischargedPage> {
   final formKey = GlobalKey<FormState>();
   int selectedButtonIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     List<bool> _isSelected = [false, true];
@@ -51,13 +56,20 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => EveningFormPage()));
+                                    builder: (context) =>
+                                        widget.isMorning == false
+                                            ? EveningAndMorningFormPage()
+                                            : StateChangeForm()));
                           },
                           child: Text(
-                            'Пройти форму вечер',
+                            widget.isMorning == false
+                                ? 'Пройти форму вечер'
+                                : 'Пройти форму утро',
                           ))),
-                  const Text(
-                    'Пожалуйста, нажмите эту кнопку после 20:00 в день выписки из больницы',
+                  Text(
+                    widget.isMorning == false
+                        ? 'Пожалуйста, нажмите эту кнопку после 20:00 в день выписки из больницы'
+                        : 'Пожалуйста, нажмите эту кнопку после 08:00 на следующий день после выписки из больницы',
                     textAlign: TextAlign.center,
                   ),
                   Container(

@@ -4,6 +4,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_before_operation_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key, required this.title});
@@ -16,6 +17,7 @@ class AuthPage extends StatefulWidget {
 
 class _MyHomePageState extends State<AuthPage> {
   final formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,7 +116,9 @@ class _MyHomePageState extends State<AuthPage> {
                       },
                       onChanged: (value) {
                         debugPrint(value);
-                        setState(() {});
+                        setState(() {
+                          // codeValue = value;
+                        });
                       },
                     ),
                   ),
@@ -196,3 +200,15 @@ class _MyHomePageState extends State<AuthPage> {
         ));
   }
 }
+
+// Future<bool> checkDocument(String number) async {
+//   // Замените "collection" на ваш путь к коллекции, а "documentId" на ID документа, который вы хотите проверить
+//   DocumentSnapshot document =
+//       await FirebaseFirestore.instance.collection('patients').doc(number).get();
+
+//   if (document.exists) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }

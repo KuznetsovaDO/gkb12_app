@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

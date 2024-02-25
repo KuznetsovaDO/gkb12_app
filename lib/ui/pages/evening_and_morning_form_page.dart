@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/widgets/custom_triangle_togglebutton.dart';
+import 'package:gkb12_app/ui/pages/gratitude_page.dart';
 
-class EveningFormPage extends StatefulWidget {
+class EveningAndMorningFormPage extends StatefulWidget {
+  final bool isMorning;
+  EveningAndMorningFormPage({this.isMorning = false});
   @override
   _EveningFormPageState createState() => _EveningFormPageState();
 }
 
-class _EveningFormPageState extends State<EveningFormPage> {
+class _EveningFormPageState extends State<EveningAndMorningFormPage> {
   final formKey = GlobalKey<FormState>();
   int selectedButtonIndex = 0;
   @override
@@ -16,7 +19,8 @@ class _EveningFormPageState extends State<EveningFormPage> {
     List<bool> _isSelected = [false, true];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Форма "Вечер'),
+        title:
+            Text(widget.isMorning == false ? 'Форма "Вечер"' : 'Форма "Утро"'),
         leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
@@ -163,7 +167,12 @@ class _EveningFormPageState extends State<EveningFormPage> {
                   Container(
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => GratitudePage()));
+                          },
                           child: Text(
                             'Отправить форму',
                           ),
