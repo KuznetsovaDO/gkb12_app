@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gkb12_app/ui/pages/doctor_main_page.dart';
 
 class AuthStuffPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
@@ -101,7 +102,12 @@ class AuthStuffPage extends StatelessWidget {
             Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DoctorMainPage()));
+                    },
                     child: Text(
                       'Войти как сотрудник',
                       style: GoogleFonts.ibmPlexSans(

@@ -4,6 +4,8 @@ import 'package:gkb12_app/ui/pages/gratitude_page.dart';
 import 'package:gkb12_app/ui/pages/evening_and_morning_form_page.dart';
 
 class StateChangeForm extends StatelessWidget {
+  final String patientId;
+  StateChangeForm({required this.patientId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +40,7 @@ class StateChangeForm extends StatelessWidget {
                                     builder: (context) =>
                                         EveningAndMorningFormPage(
                                           isMorning: true,
+                                          patientId: patientId,
                                         )));
                           },
                           child: Text("Стало хуже",
@@ -66,7 +69,10 @@ class StateChangeForm extends StatelessWidget {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => GratitudePage()));
+                                        builder: (context) => GratitudePage(
+                                              patientId: patientId,
+                                              isMorning: true,
+                                            )));
                               },
                               child: Text("Не изменилось",
                                   style: GoogleFonts.ibmPlexSans(
@@ -96,6 +102,7 @@ class StateChangeForm extends StatelessWidget {
                                     builder: (context) =>
                                         EveningAndMorningFormPage(
                                           isMorning: true,
+                                          patientId: patientId,
                                         )));
                           },
                           child: Text("Стало лучше",

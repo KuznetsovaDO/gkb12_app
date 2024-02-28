@@ -126,8 +126,12 @@ class PatientBeforeOperationPage extends StatelessWidget {
       // Обновляем поля документа с помощью метода update
       await documentReference.update({'Status': 'После операции'});
       // ignore: use_build_context_synchronously
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PatientAfterOperationPage()));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PatientAfterOperationPage(
+                    patientId: patientId,
+                  )));
       print('Поле документа успешно обновлено');
     } catch (e) {
       print('Ошибка при обновлении поля документа: $e');

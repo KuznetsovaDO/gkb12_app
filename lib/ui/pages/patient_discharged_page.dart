@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/pages/evening_and_morning_form_page.dart';
@@ -7,8 +8,9 @@ import 'package:gkb12_app/ui/pages/state_change_form.dart';
 
 class PatientDischargedPage extends StatefulWidget {
   final bool isMorning; // Добавленное поле класса
+  final String patientId;
 
-  PatientDischargedPage({this.isMorning = false});
+  PatientDischargedPage({this.isMorning = false, required this.patientId});
   @override
   _PatientDischargedPageState createState() => _PatientDischargedPageState();
 }
@@ -58,8 +60,11 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         widget.isMorning == false
-                                            ? EveningAndMorningFormPage()
-                                            : StateChangeForm()));
+                                            ? EveningAndMorningFormPage(
+                                                patientId: widget.patientId)
+                                            : StateChangeForm(
+                                                patientId: widget.patientId,
+                                              )));
                           },
                           child: Text(
                             widget.isMorning == false

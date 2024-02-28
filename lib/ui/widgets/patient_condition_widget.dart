@@ -18,8 +18,11 @@ class CustomToggleButtons extends StatefulWidget {
   _CustomToggleButtonsState createState() => _CustomToggleButtonsState();
 }
 
+int endSelected = 0;
+int endSelectedIfNums = 0;
+
 class _CustomToggleButtonsState extends State<CustomToggleButtons> {
-  int selectedButtonIndex = 0;
+  int selectedIndex = 0;
   double paddingForButton = 8;
   double paddingForSmile = 8;
   List<String> ImagePaths = [
@@ -33,7 +36,7 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
   @override
   void initState() {
     super.initState();
-    selectedButtonIndex = widget.initialSelectedIndex;
+    selectedIndex = widget.initialSelectedIndex;
   }
 
   @override
@@ -45,7 +48,7 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
         direction: Axis.horizontal,
         borderRadius: BorderRadius.circular(10),
         renderBorder: false,
-        isSelected: List.generate(5, (index) => index == selectedButtonIndex),
+        isSelected: List.generate(5, (index) => index == selectedIndex),
         children: [
           Padding(
               padding: EdgeInsets.all(paddingForButton),
@@ -69,8 +72,8 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.lightGreen.shade200,
                         border: Border.all(
-                          width: selectedButtonIndex == 0 ? 2 : 0.5,
-                          color: selectedButtonIndex == 0
+                          width: selectedIndex == 0 ? 2 : 0.5,
+                          color: selectedIndex == 0
                               ? Colors.green.shade900
                               : Colors.grey,
                         ),
@@ -98,8 +101,8 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.lightGreen.shade100,
                         border: Border.all(
-                          width: selectedButtonIndex == 1 ? 2 : 0.5,
-                          color: selectedButtonIndex == 1
+                          width: selectedIndex == 1 ? 2 : 0.5,
+                          color: selectedIndex == 1
                               ? Colors.green.shade800
                               : Colors.grey,
                         ),
@@ -127,8 +130,8 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.yellow.shade100,
                         border: Border.all(
-                          width: selectedButtonIndex == 2 ? 2 : 0.5,
-                          color: selectedButtonIndex == 2
+                          width: selectedIndex == 2 ? 2 : 0.5,
+                          color: selectedIndex == 2
                               ? Colors.yellow.shade800
                               : Colors.grey,
                         ),
@@ -156,8 +159,8 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.orange.shade100,
                         border: Border.all(
-                          width: selectedButtonIndex == 3 ? 2 : 0.5,
-                          color: selectedButtonIndex == 3
+                          width: selectedIndex == 3 ? 2 : 0.5,
+                          color: selectedIndex == 3
                               ? Colors.orange.shade800
                               : Colors.grey,
                         ),
@@ -185,14 +188,17 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                     decoration: BoxDecoration(
                         color: Colors.red.shade100,
                         border: Border.all(
-                          width: selectedButtonIndex == 4 ? 2 : 0.5,
-                          color: selectedButtonIndex == 4
-                              ? Colors.red
-                              : Colors.grey,
+                          width: selectedIndex == 4 ? 2 : 0.5,
+                          color: selectedIndex == 4 ? Colors.red : Colors.grey,
                         ),
                         borderRadius: BorderRadius.circular(10.0))),
               ))
         ],
-        onPressed: (int index) => setState(() => selectedButtonIndex = index));
+        onPressed: (int index) => setState(() => {
+              selectedIndex = index,
+              widget.isSmiles == true
+                  ? endSelected = index
+                  : endSelectedIfNums = index
+            }));
   }
 }

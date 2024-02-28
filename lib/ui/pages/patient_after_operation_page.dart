@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
@@ -5,6 +6,8 @@ import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 
 class PatientAfterOperationPage extends StatefulWidget {
+  final String patientId;
+  PatientAfterOperationPage({required this.patientId});
   @override
   _PatientAfterOperationPageState createState() =>
       _PatientAfterOperationPageState();
@@ -55,9 +58,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                   CustomToggleButtons(
                     initialSelectedIndex: selectedButtonIndex,
                     onPressed: (int index) {
-                      setState(() {
-                        selectedButtonIndex = index;
-                      });
+                      setState(() {});
                     },
                     isSmiles: true,
                   ),
@@ -88,11 +89,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PatientDischargedPage()));
+                            changeStatus(widget.patientId, context);
                           },
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -165,5 +162,28 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                 ],
               ))),
     );
+  }
+
+  Future<void> changeStatus(String patientId, BuildContext context) async {
+    try {
+      // Получаем ссылку на документ с заданным documentId
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection('patients').doc(patientId);
+
+      // Обновляем поля документа с помощью метода update
+      await documentReference.update({'Status': 'Выписан(-а)'});
+      await documentReference
+          .update({'ConditionAfterOperation': endSelected + 1});
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PatientDischargedPage(
+                    patientId: widget.patientId,
+                  )));
+      print('Поле документа успешно обновлено');
+    } catch (e) {
+      print('Ошибка при обновлении поля документа: $e');
+    }
   }
 }

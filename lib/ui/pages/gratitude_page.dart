@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/ui/pages/after_discharged_page.dart';
+import 'package:gkb12_app/ui/pages/evening_and_morning_form_page.dart';
 
 import 'package:gkb12_app/ui/pages/patient_after_operation_page.dart';
-import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
+
 import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
+import 'package:gkb12_app/ui/pages/state_change_form.dart';
 
 class GratitudePage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
+  final String patientId;
+  final bool isMorning;
+  GratitudePage({required this.patientId, this.isMorning = false});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +42,21 @@ class GratitudePage extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 40),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PatientDischargedPage(
-                                  isMorning: true,
-                                )));
+                    if (isMorning) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AfterDischargedPage(
+                                    patientId: patientId,
+                                    isMorning: true,
+                                  )));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  StateChangeForm(patientId: patientId)));
+                    }
                   },
                   style: Theme.of(context).outlinedButtonTheme.style,
                   child: Text(

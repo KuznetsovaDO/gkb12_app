@@ -230,17 +230,21 @@ class _MyHomePageState extends State<AuthPage> {
     try {
       await FirebaseFirestore.instance
           .collection('patients')
-          .doc(docID)
+          .where('access_code',
+              isEqualTo:
+                  docID) // Проверяем поле access_code на соответствие docID
           .get()
-          .then((doc) {
-        exist = doc.exists;
-        if (doc.exists) {
+          .then((querySnapshot) {
+        if (querySnapshot.docs.isNotEmpty) {
+          // Документ с заданным access_code найден
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => PatientBeforeOperationPage(
-                        patientId: docID,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => PatientBeforeOperationPage(
+                patientId: docID,
+              ),
+            ),
+          );
         }
       });
       return exist;

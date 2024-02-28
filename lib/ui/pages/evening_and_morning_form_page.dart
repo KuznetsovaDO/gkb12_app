@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
@@ -6,17 +7,27 @@ import 'package:gkb12_app/ui/pages/gratitude_page.dart';
 
 class EveningAndMorningFormPage extends StatefulWidget {
   final bool isMorning;
-  EveningAndMorningFormPage({this.isMorning = false});
+  final String patientId;
+  EveningAndMorningFormPage({this.isMorning = false, required this.patientId});
   @override
   _EveningFormPageState createState() => _EveningFormPageState();
 }
 
 class _EveningFormPageState extends State<EveningAndMorningFormPage> {
   final formKey = GlobalKey<FormState>();
-  int selectedButtonIndex = 0;
+  String strTemperature = "";
+  bool dizziness = false;
+  final Map<String, String> someMap = {
+    "condition": '1',
+    "painIntensity": '1',
+    "temperature": '36.6',
+    "dizziness": "false",
+    "bleeding": "false",
+    "nausea": "false"
+  };
+
   @override
   Widget build(BuildContext context) {
-    List<bool> _isSelected = [false, true];
     return Scaffold(
       appBar: AppBar(
         title:
@@ -32,8 +43,7 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.notifications))
         ],
         bottom: const PreferredSize(
-          preferredSize:
-              Size.fromHeight(20.0), // Установите желаемую высоту подзаголовка
+          preferredSize: Size.fromHeight(20.0),
           child: Padding(
             padding: EdgeInsets.only(bottom: 5.0),
             child: Text(
@@ -59,10 +69,10 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                         style: Theme.of(context).textTheme.bodyMedium,
                       )),
                   CustomToggleButtons(
-                    initialSelectedIndex: selectedButtonIndex,
+                    initialSelectedIndex: 0,
                     onPressed: (int index) {
                       setState(() {
-                        selectedButtonIndex = index;
+                        someMap["condition"] = (endSelected + 1).toString();
                       });
                     },
                   ),
@@ -73,11 +83,9 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                         style: Theme.of(context).textTheme.bodyMedium,
                       )),
                   CustomToggleButtons(
-                    initialSelectedIndex: selectedButtonIndex,
+                    initialSelectedIndex: 0,
                     onPressed: (int index) {
-                      setState(() {
-                        selectedButtonIndex = index;
-                      });
+                      setState(() {});
                     },
                     isSmiles: false,
                   ),
@@ -87,24 +95,28 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                         'Пожалуйста, укажите вашу текущую температуру тела',
                         style: Theme.of(context).textTheme.bodyMedium,
                       )),
-                  const Align(
+                  Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
                         height: 50,
                         width: 200,
                         child: TextField(
-                            decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Температура тела',
-                        )),
+                            onChanged: (value) => strTemperature = value,
+                            onEditingComplete: () {
+                              someMap["temperature"] = strTemperature;
+                            },
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: 'Температура тела',
+                            )),
                       )),
                   Container(
                       margin: EdgeInsets.only(top: 10, bottom: 20),
-                      child: Text(
+                      child: const Text(
                         'Отметьте, пожалуйста, наличие/отсутствие у Вас следующих симпотомов:',
                         textAlign: TextAlign.center,
                       )),
-                  Align(
+                  const Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Есть ли у вас головокружение?',
@@ -120,9 +132,9 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                             onPressed: (bool isFirstSelected) {
                               // Пишите здесь код, который будет выполняться при выборе одной из кнопок
                               if (isFirstSelected) {
-                                print('Выбрана кнопка 1');
+                                someMap["dizziness"] = "true";
                               } else {
-                                print('Выбрана кнопка 2');
+                                someMap["dizziness"] = "false";
                               }
                             },
                           ))),
@@ -139,9 +151,9 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                             onPressed: (bool isFirstSelected) {
                               // Пишите здесь код, который будет выполняться при выборе одной из кнопок
                               if (isFirstSelected) {
-                                print('Да');
+                                someMap["bleeding"] = "true";
                               } else {
-                                print('Нет');
+                                someMap["bleeding"] = "false";
                               }
                             },
                           ))),
@@ -158,9 +170,9 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                             onPressed: (bool isFirstSelected) {
                               // Пишите здесь код, который будет выполняться при выборе одной из кнопок
                               if (isFirstSelected) {
-                                print('Выбрана кнопка 1');
+                                someMap["nausea"] = "true";
                               } else {
-                                print('Выбрана кнопка 2');
+                                someMap["nausea"] = "false";
                               }
                             },
                           ))),
@@ -168,10 +180,7 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                       margin: EdgeInsets.symmetric(vertical: 20),
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => GratitudePage()));
+                            writeData(widget.patientId, someMap, context);
                           },
                           child: Text(
                             'Отправить форму',
@@ -180,5 +189,32 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                 ],
               ))),
     );
+  }
+
+  Future<void> writeData(
+      String patientId, Map data, BuildContext context) async {
+    try {
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection('patients').doc(patientId);
+
+      // Получаем ссылку на документ с заданным documentId
+
+      // Обновляем поля документа с помощью метода update
+      await documentReference.update({'Status': 'Заполнил форму "Утро"'});
+      await documentReference.update({'morningForm': data});
+      someMap["painIntensity"] = (endSelectedIfNums + 1).toString();
+      someMap["condition"] = (endSelected + 1).toString();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GratitudePage(
+                    patientId: widget.patientId,
+                    isMorning: false,
+                  )));
+
+      print('Поле документа успешно обновлено');
+    } catch (e) {
+      print('Ошибка при обновлении поля документа: $e');
+    }
   }
 }

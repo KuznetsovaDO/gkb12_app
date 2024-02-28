@@ -44,27 +44,28 @@ class MyApp extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)))),
         primaryColor: const Color(0x9C0042EB),
         textTheme: TextTheme(
-          titleLarge: GoogleFonts.ibmPlexSans(
-              fontSize: 20,
-              letterSpacing: 0,
-              fontWeight: FontWeight.w500,
-              color: Colors.white),
-          headlineLarge: GoogleFonts.ibmPlexSans(
-              fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
-          labelMedium: GoogleFonts.ibmPlexSans(
-              fontSize: 20, letterSpacing: 0, fontWeight: FontWeight.w500),
-          bodyMedium: GoogleFonts.ibmPlexSans(
-              fontSize: 18,
-              letterSpacing: 0,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey[800]),
-          bodySmall: GoogleFonts.ibmPlexSans(
-              fontSize: 16,
-              letterSpacing: 0,
-              height: 1,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey[600]),
-        ),
+            titleLarge: GoogleFonts.ibmPlexSans(
+                fontSize: 20,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Colors.white),
+            headlineLarge: GoogleFonts.ibmPlexSans(
+                fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
+            labelMedium: GoogleFonts.ibmPlexSans(
+                fontSize: 20, letterSpacing: 0, fontWeight: FontWeight.w500),
+            bodyMedium: GoogleFonts.ibmPlexSans(
+                fontSize: 18,
+                letterSpacing: 0,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[800]),
+            bodySmall: GoogleFonts.ibmPlexSans(
+                fontSize: 16,
+                letterSpacing: 0,
+                height: 1,
+                fontWeight: FontWeight.w400,
+                color: Colors.grey[600]),
+            headlineSmall: GoogleFonts.ibmPlexSans(
+                fontSize: 12, fontWeight: FontWeight.w500, letterSpacing: 0)),
         useMaterial3: true,
       ),
       home: const AuthPage(title: 'Flutter Demo Home Page'),
