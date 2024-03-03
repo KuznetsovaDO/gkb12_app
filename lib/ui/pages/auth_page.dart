@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/ui/pages/auth_stuff_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<AuthPage> {
   bool hasError = false;
   String currentText = "";
   final formKey = GlobalKey<FormState>();
+  PatientController controller = PatientController();
 
   @override
   void initState() {
@@ -131,7 +133,8 @@ class _MyHomePageState extends State<AuthPage> {
                       cursorColor: Colors.black,
                       animationDuration: const Duration(milliseconds: 300),
                       enableActiveFill: false,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
+                      textCapitalization: TextCapitalization.characters,
                       boxShadows: const [
                         BoxShadow(
                           offset: Offset(0, 1),
@@ -156,8 +159,30 @@ class _MyHomePageState extends State<AuthPage> {
                 Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
-                        onPressed: () {
-                          checkDocument(codeValue, context);
+                        onPressed: () async {
+                          // Вызываем метод checkPatient напрямую из контроллера PatientController
+                          bool isPatientValid =
+                              await controller.checkPatient(codeValue);
+                          if (isPatientValid) {
+                            // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PatientBeforeOperationPage(
+                                  patientId: codeValue,
+                                ),
+                              ),
+                            );
+                          } else {
+                            // Если пациент не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Пациент с данным кодом не найден.'),
+                              ),
+                            );
+                          }
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
                         child: Text(
@@ -241,7 +266,7 @@ class _MyHomePageState extends State<AuthPage> {
             context,
             MaterialPageRoute(
               builder: (context) => PatientBeforeOperationPage(
-                patientId: docID,
+                patientId: querySnapshot.docs.first.id,
               ),
             ),
           );

@@ -124,7 +124,7 @@ class PatientBeforeOperationPage extends StatelessWidget {
           FirebaseFirestore.instance.collection('patients').doc(documentId);
 
       // Обновляем поля документа с помощью метода update
-      await documentReference.update({'Status': 'После операции'});
+      await documentReference.update({'status': 'После операции'});
       // ignore: use_build_context_synchronously
       Navigator.push(
           context,

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/controllers/doctors_controller.dart';
+import 'package:gkb12_app/controllers/registrators_controller.dart';
+import 'package:gkb12_app/ui/pages/registrator_main_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/doctor_main_page.dart';
 
 class AuthStuffPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
+  DoctorsController controllerD = DoctorsController();
+  RegistratorsController controllerR = RegistratorsController();
+  String codeValue = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,8 +26,6 @@ class AuthStuffPage extends StatelessWidget {
           Image.asset(
             "assets/icons/logo.jpg",
           ),
-
-          //more widgets to place here
         ],
       ),
       body: Center(
@@ -81,7 +85,8 @@ class AuthStuffPage extends StatelessWidget {
                   cursorColor: Colors.black,
                   animationDuration: const Duration(milliseconds: 300),
                   enableActiveFill: false,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
+                  textCapitalization: TextCapitalization.characters,
                   boxShadows: const [
                     BoxShadow(
                       offset: Offset(0, 1),
@@ -94,7 +99,7 @@ class AuthStuffPage extends StatelessWidget {
                     ;
                   },
                   onChanged: (value) {
-                    debugPrint(value);
+                    codeValue = value;
                   },
                 ),
               ),
@@ -102,11 +107,49 @@ class AuthStuffPage extends StatelessWidget {
             Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => DoctorMainPage()));
+                    onPressed: () async {
+                      if (codeValue[0] == "D") {
+                        // Вызываем метод checkPatient напрямую из контроллера PatientController
+                        bool isDoctorValid =
+                            await controllerD.checkDoctor(codeValue);
+                        if (isDoctorValid == true) {
+                          // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DoctorMainPage(),
+                            ),
+                          );
+                        } else {
+                          // Если доктор не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('Сотрудник с данным кодом не найден.'),
+                            ),
+                          );
+                        }
+                      } else if (codeValue[0] == "R") {
+                        bool isRegValid =
+                            await controllerR.checkRegistrator(codeValue);
+                        if (isRegValid) {
+                          // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegistratorMainPage(),
+                            ),
+                          );
+                        } else {
+                          // Если пациент не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                                  Text('Сотрудник с данным кодом не найден.'),
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: Text(
                       'Войти как сотрудник',

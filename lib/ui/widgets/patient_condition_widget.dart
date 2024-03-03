@@ -3,15 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomToggleButtons extends StatefulWidget {
   final int initialSelectedIndex;
-
-  final Function(int) onPressed;
   final bool isSmiles;
+  final Function(int) onSelectedIndexChangedSmiles;
+  final Function(int) onSelectedIndexChangedNumbers;
 
   const CustomToggleButtons({
     Key? key,
     this.initialSelectedIndex = 0,
-    required this.onPressed,
     this.isSmiles = true,
+    required this.onSelectedIndexChangedSmiles,
+    required this.onSelectedIndexChangedNumbers,
   }) : super(key: key);
 
   @override
@@ -194,11 +195,15 @@ class _CustomToggleButtonsState extends State<CustomToggleButtons> {
                         borderRadius: BorderRadius.circular(10.0))),
               ))
         ],
-        onPressed: (int index) => setState(() => {
-              selectedIndex = index,
-              widget.isSmiles == true
-                  ? endSelected = index
-                  : endSelectedIfNums = index
-            }));
+        onPressed: (int index) {
+          setState(() {
+            selectedIndex = index;
+          });
+          if (widget.isSmiles) {
+            widget.onSelectedIndexChangedSmiles(index);
+          } else {
+            widget.onSelectedIndexChangedNumbers(index);
+          } // Вызываем обратный вы
+        });
   }
 }

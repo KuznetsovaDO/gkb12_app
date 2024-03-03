@@ -16,6 +16,7 @@ class PatientAfterOperationPage extends StatefulWidget {
 class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
   final formKey = GlobalKey<FormState>();
   int selectedButtonIndex = 0;
+  int selected = 0;
   @override
   Widget build(BuildContext context) {
     List<bool> _isSelected = [false, true];
@@ -57,9 +58,10 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                           ))),
                   CustomToggleButtons(
                     initialSelectedIndex: selectedButtonIndex,
-                    onPressed: (int index) {
-                      setState(() {});
-                    },
+                    onSelectedIndexChangedSmiles:
+                        handleToggleButtonsIndexChanged,
+                    onSelectedIndexChangedNumbers:
+                        handleToggleButtonsIndexChanged,
                     isSmiles: true,
                   ),
                   Padding(
@@ -172,8 +174,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
 
       // Обновляем поля документа с помощью метода update
       await documentReference.update({'Status': 'Выписан(-а)'});
-      await documentReference
-          .update({'ConditionAfterOperation': endSelected + 1});
+      await documentReference.update({'ConditionAfterOperation': selected + 1});
       // ignore: use_build_context_synchronously
       Navigator.push(
           context,
@@ -185,5 +186,13 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
     } catch (e) {
       print('Ошибка при обновлении поля документа: $e');
     }
+  }
+
+  void handleToggleButtonsIndexChanged(int index) {
+    // Обработка выбранного индекса, сохранение его или что угодно еще
+    // Например, вы можете сохранить индекс в состоянии или отправить на сервер
+    setState(() {
+      selected = index;
+    });
   }
 }

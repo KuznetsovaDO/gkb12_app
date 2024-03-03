@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/widgets/custom_triangle_togglebutton.dart';
 import 'package:gkb12_app/ui/pages/gratitude_page.dart';
@@ -8,8 +7,10 @@ import 'package:gkb12_app/ui/pages/gratitude_page.dart';
 class EveningAndMorningFormPage extends StatefulWidget {
   final bool isMorning;
   final String patientId;
-  EveningAndMorningFormPage({this.isMorning = false, required this.patientId});
+  const EveningAndMorningFormPage(
+      {super.key, this.isMorning = false, required this.patientId});
   @override
+  // ignore: library_private_types_in_public_api
   _EveningFormPageState createState() => _EveningFormPageState();
 }
 
@@ -17,13 +18,15 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
   final formKey = GlobalKey<FormState>();
   String strTemperature = "";
   bool dizziness = false;
+  int selectedCondition = 0;
+  int selectedPain = 0;
   final Map<String, String> someMap = {
     "condition": '1',
     "painIntensity": '1',
     "temperature": '36.6',
-    "dizziness": "false",
-    "bleeding": "false",
-    "nausea": "false"
+    "dizziness": "true",
+    "bleeding": "true",
+    "nausea": "true"
   };
 
   @override
@@ -70,11 +73,10 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                       )),
                   CustomToggleButtons(
                     initialSelectedIndex: 0,
-                    onPressed: (int index) {
-                      setState(() {
-                        someMap["condition"] = (endSelected + 1).toString();
-                      });
-                    },
+                    onSelectedIndexChangedSmiles:
+                        handleToggleButtonsIndexChangedSmiles,
+                    onSelectedIndexChangedNumbers:
+                        handleToggleButtonsIndexChangedNumbers,
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -84,10 +86,11 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                       )),
                   CustomToggleButtons(
                     initialSelectedIndex: 0,
-                    onPressed: (int index) {
-                      setState(() {});
-                    },
                     isSmiles: false,
+                    onSelectedIndexChangedNumbers:
+                        handleToggleButtonsIndexChangedNumbers,
+                    onSelectedIndexChangedSmiles:
+                        handleToggleButtonsIndexChangedNumbers,
                   ),
                   Container(
                       margin: EdgeInsets.only(top: 10, bottom: 15),
@@ -201,20 +204,44 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
 
       // Обновляем поля документа с помощью метода update
       await documentReference.update({'Status': 'Заполнил форму "Утро"'});
-      await documentReference.update({'morningForm': data});
-      someMap["painIntensity"] = (endSelectedIfNums + 1).toString();
-      someMap["condition"] = (endSelected + 1).toString();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => GratitudePage(
-                    patientId: widget.patientId,
-                    isMorning: false,
-                  )));
+      someMap["painIntensity"] = (selectedPain + 1).toString();
+      someMap["condition"] = (selectedPain + 1).toString();
+      if (widget.isMorning) {
+        await documentReference.update({'morningForm': data});
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => GratitudePage(
+                      patientId: widget.patientId,
+                      isMorning: true,
+                    )));
+      } else {
+        await documentReference.update({'eveningForm': data});
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => GratitudePage(
+                      patientId: widget.patientId,
+                      isMorning: false,
+                    )));
+      }
 
       print('Поле документа успешно обновлено');
     } catch (e) {
       print('Ошибка при обновлении поля документа: $e');
     }
+  }
+
+  void handleToggleButtonsIndexChangedSmiles(int index) {
+    setState(() {
+      selectedCondition = index;
+    });
+  }
+
+  void handleToggleButtonsIndexChangedNumbers(int index) {
+    setState(() {
+      // Делайте что-то с индексом, если нужно
+      selectedPain = index;
+    });
   }
 }
