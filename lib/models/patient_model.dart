@@ -5,23 +5,33 @@ class PatientModel {
   final String accessCode;
   final String med_profile;
   final String diagnosis;
+  final String lastCondition;
 
   PatientModel(
       {this.id,
       required this.accessCode,
       required this.med_profile,
-      required this.diagnosis});
+      required this.diagnosis,
+      required this.lastCondition});
 
   toJson() {
-    return {"id": id, "med_profile": med_profile, "diagnosis": diagnosis};
+    return {
+      "id": id,
+      "access_code": accessCode,
+      "med_profile": med_profile,
+      "diagnosis": diagnosis,
+      "lastCondition": lastCondition
+    };
   }
 
   factory PatientModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data();
     return PatientModel(
+        id: document.id,
         accessCode: data!["access_code"],
         med_profile: data["med_profile"],
-        diagnosis: data["diagnosis"]);
+        diagnosis: data["diagnosis"],
+        lastCondition: data['lastCondition']);
   }
 }

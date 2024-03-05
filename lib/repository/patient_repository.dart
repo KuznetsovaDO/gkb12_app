@@ -24,6 +24,16 @@ class PatientRepository extends GetxController {
     return patientData;
   }
 
+  Future<List<PatientModel>> allPatientsFromProfile(String profile) async {
+    final snapshot = await _db
+        .collection("patients")
+        .where("med_profile", isEqualTo: profile)
+        .get();
+    final patientData =
+        snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
+    return patientData;
+  }
+
   Future<bool> checkPatient(String docID) async {
     try {
       final querySnapshot = await _db
@@ -36,7 +46,6 @@ class PatientRepository extends GetxController {
         return false;
       }
     } catch (e) {
-      // If any error
       return false;
     }
   }

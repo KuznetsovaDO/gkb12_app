@@ -21,4 +21,8 @@ class DoctorsController extends GetxController {
   Future<bool> checkDoctor(String accessCode) async {
     return await _doctorsRepo.checkEmployee(accessCode);
   }
+
+  Future<String> getDoctorsProfile(String accessCode) async {
+    return await _doctorsRepo.getDoctorsProfile(accessCode);
+  }
 }

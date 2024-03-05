@@ -31,7 +31,7 @@ class StateChangeForm extends StatelessWidget {
                   children: [
                     SizedBox(
                         height: 40,
-                        width: 120,
+                        width: MediaQuery.of(context).size.width / 3.5,
                         child: OutlinedButton(
                           onPressed: () {
                             Navigator.push(
@@ -63,7 +63,7 @@ class StateChangeForm extends StatelessWidget {
                         margin: EdgeInsets.symmetric(horizontal: 5),
                         child: SizedBox(
                             height: 40,
-                            width: 120,
+                            width: MediaQuery.of(context).size.width / 3.5,
                             child: OutlinedButton(
                               onPressed: () {
                                 Navigator.push(
@@ -93,7 +93,7 @@ class StateChangeForm extends StatelessWidget {
                             ))),
                     SizedBox(
                         height: 40,
-                        width: 120,
+                        width: MediaQuery.of(context).size.width / 3.5,
                         child: OutlinedButton(
                           onPressed: () {
                             Navigator.push(

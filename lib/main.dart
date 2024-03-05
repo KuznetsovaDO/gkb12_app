@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.w500,
                 color: Colors.white),
             headlineLarge: GoogleFonts.ibmPlexSans(
-                fontSize: 35, fontWeight: FontWeight.w700, letterSpacing: 0),
+                fontSize: 30, fontWeight: FontWeight.w700, letterSpacing: 0),
             labelMedium: GoogleFonts.ibmPlexSans(
                 fontSize: 20, letterSpacing: 0, fontWeight: FontWeight.w500),
             bodyMedium: GoogleFonts.ibmPlexSans(

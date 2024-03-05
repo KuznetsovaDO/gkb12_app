@@ -37,6 +37,14 @@ class DoctorsRepository extends GetxController {
     return doctorsData;
   }
 
+  Future<String> getDoctorsProfile(String access_code) async {
+    final snapshot = await _db
+        .collection('doctors')
+        .where('access_code', isEqualTo: access_code)
+        .get();
+    return snapshot.docs.first["med_profile"];
+  }
+
   //проверяет наличие доктора с access_code
   Future<bool> checkEmployee(String access_code) async {
     try {

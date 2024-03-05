@@ -17,10 +17,10 @@ class RegistratorMainPage extends StatefulWidget {
   const RegistratorMainPage({super.key});
 
   @override
-  State<RegistratorMainPage> createState() => _MyHomePageState();
+  State<RegistratorMainPage> createState() => _RegistratoreMainPageState();
 }
 
-class _MyHomePageState extends State<RegistratorMainPage> {
+class _RegistratoreMainPageState extends State<RegistratorMainPage> {
   TextEditingController textEditingController = TextEditingController();
   // ..text = "123456";
 
@@ -49,79 +49,172 @@ class _MyHomePageState extends State<RegistratorMainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: TextButton(
-            onPressed: () {},
-            child: Text('Выйти из профиля',
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0,
-                    color: Colors.grey)),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text('Выйти из профиля',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.ibmPlexSans(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0,
+                color: Colors.grey)),
+      ),
+      body: Column(
+        children: [
+          Text(
+            "Добрый День!",
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(20.0),
-            child: Padding(
-                padding: EdgeInsets.only(bottom: 5.0),
-                child: Column(
-                  children: [
-                    Text(
-                      "Добрый День! Регистратор",
-                      style: Theme.of(context).textTheme.headlineLarge,
-                    ),
-                    Text(
-                      "Профиль: ",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )
-                  ],
-                )),
+          Text(
+            "Профиль: ",
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-              padding: const EdgeInsets.all(5),
-              child: FutureBuilder<List<PatientModel>>(
-                future: controller.getAllPatient(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasData) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (c, index) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                iconColor: Colors.blue,
-                                tileColor: Colors.blue.withOpacity(0.1),
-                                leading:
-                                    const Icon(Icons.account_circle_outlined),
-                                title: Text(
-                                    "Name: ${snapshot.data![index].accessCode}"),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              AuthPage(title: "title")));
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text(snapshot.error.toString()),
-                      );
-                    }
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
+          Expanded(
+            child: FutureBuilder<List<PatientModel>>(
+              future: controller.getAllPatient(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (c, index) {
+                        return Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.all(8),
+                                      width:
+                                          MediaQuery.of(context).size.width / 6,
+                                      height:
+                                          MediaQuery.of(context).size.width / 6,
+                                      alignment: Alignment.center,
+                                      padding: EdgeInsets.all(
+                                          MediaQuery.of(context).size.width /
+                                              120),
+                                      child: Image.asset('assets/images/smile' +
+                                          snapshot.data![index].lastCondition +
+                                          '.png'),
+                                      decoration: BoxDecoration(
+                                        color: snapshot.data![index]
+                                                    .lastCondition ==
+                                                "1"
+                                            ? Colors.green.shade300
+                                            : snapshot.data![index]
+                                                        .lastCondition ==
+                                                    "2"
+                                                ? Colors.green.shade200
+                                                : snapshot.data![index]
+                                                            .lastCondition ==
+                                                        "3"
+                                                    ? Colors.yellow.shade200
+                                                    : snapshot.data![index]
+                                                                .lastCondition ==
+                                                            "4"
+                                                        ? Colors.orange.shade300
+                                                        : snapshot.data![index]
+                                                                    .lastCondition ==
+                                                                "5"
+                                                            ? Colors
+                                                                .red.shade300
+                                                            : Colors.white,
+                                        border: Border.all(
+                                          width: 0.5,
+                                          color: Colors.grey,
+                                        ),
+                                        borderRadius:
+                                            BorderRadius.circular(10.0),
+                                      ),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Text("#" +
+                                            snapshot.data![index].id
+                                                .toString()),
+                                        Text(
+                                          snapshot.data![index].med_profile,
+                                          style: TextStyle(fontSize: 11),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        height: 40,
+                                        child: OutlinedButton(
+                                          style: TextButton.styleFrom(
+                                            elevation: 0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            side: BorderSide(
+                                              width: 1.5,
+                                              color: Colors.black,
+                                            ),
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.black,
+                                          ),
+                                          onPressed: () {},
+                                          child: Text("Перейти в чат"),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            width: 1.5,
+                                            color: Colors.grey,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                        height: 40,
+                                        child: Text(
+                                          "Статус",
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(snapshot.error.toString()),
+                    );
                   }
-                  // Добавляем возврат значения, если все условия не выполнены
-                  return Container(); // Можно также вернуть другой виджет по умолчанию
-                },
-              )),
-        ));
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return Container();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

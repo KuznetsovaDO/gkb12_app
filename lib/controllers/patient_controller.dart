@@ -18,4 +18,8 @@ class PatientController extends GetxController {
   Future<bool> checkPatient(String docID) async {
     return await _patientRepo.checkPatient(docID);
   }
+
+  Future<List<PatientModel>> allPatientsFromProfile(String profile) async {
+    return _patientRepo.allPatientsFromProfile(profile);
+  }
 }

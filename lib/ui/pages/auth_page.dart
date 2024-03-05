@@ -34,6 +34,8 @@ class _MyHomePageState extends State<AuthPage> {
   String currentText = "";
   final formKey = GlobalKey<FormState>();
   PatientController controller = PatientController();
+  String debugMessage = "";
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -50,6 +52,7 @@ class _MyHomePageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) CircularProgressIndicator();
     return Scaffold(
         appBar: AppBar(
           leading: Padding(
@@ -62,7 +65,7 @@ class _MyHomePageState extends State<AuthPage> {
             TextButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AuthStuffPage()));
+                    MaterialPageRoute(builder: (context) => AuthStaffPage()));
               },
               child: Text(
                 'Войти как сотрудник',
@@ -105,6 +108,7 @@ class _MyHomePageState extends State<AuthPage> {
                       horizontal: 10,
                     ),
                     child: PinCodeTextField(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       appContext: context,
                       length: 4,
                       obscureText: false,
@@ -113,19 +117,13 @@ class _MyHomePageState extends State<AuthPage> {
                           letterSpacing: 0,
                           fontWeight: FontWeight.w700),
                       animationType: AnimationType.fade,
-                      validator: (v) {
-                        if (v!.length < 3) {
-                          return "Неверный код";
-                        } else {
-                          return "good";
-                        }
-                      },
+                      validator: (v) {},
                       controller: textEditingController,
                       pinTheme: PinTheme(
                           shape: PinCodeFieldShape.box,
-                          borderRadius: BorderRadius.circular(18),
-                          fieldHeight: 80,
-                          fieldWidth: 80,
+                          fieldHeight: MediaQuery.of(context).size.width / 5,
+                          fieldWidth: MediaQuery.of(context).size.width / 5,
+                          borderRadius: BorderRadius.circular(14),
                           activeFillColor: Colors.white,
                           inactiveColor: Colors.grey[400],
                           selectedColor: Colors.blueAccent[700],
@@ -142,13 +140,8 @@ class _MyHomePageState extends State<AuthPage> {
                           blurRadius: 10,
                         )
                       ],
-                      onCompleted: (v) {
-                        debugPrint() {}
-
-                        ;
-                      },
                       onChanged: (value) {
-                        debugPrint(value);
+                        debugMessage = "";
                         setState(() {
                           codeValue = value;
                         });
@@ -156,32 +149,48 @@ class _MyHomePageState extends State<AuthPage> {
                     ),
                   ),
                 ),
+                Text(
+                  debugMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Color.fromARGB(255, 178, 1, 1)),
+                ),
                 Container(
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                         onPressed: () async {
+                          if (codeValue.length < 4) {
+                            setState(() {
+                              debugMessage =
+                                  "Код должен содержать не менее 4 символов";
+                            });
+                          }
                           // Вызываем метод checkPatient напрямую из контроллера PatientController
-                          bool isPatientValid =
-                              await controller.checkPatient(codeValue);
-                          if (isPatientValid) {
-                            // Если пациент существует, переходим на страницу PatientBeforeOperationPage
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    PatientBeforeOperationPage(
-                                  patientId: codeValue,
+                          else {
+                            setState(() {
+                              isLoading =
+                                  true; // Устанавливаем состояние загрузки в true перед вызовом checkDocument
+                            });
+                            bool isPatientValid =
+                                await controller.checkPatient(codeValue);
+                            if (isPatientValid) {
+                              // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PatientBeforeOperationPage(
+                                    patientId: codeValue,
+                                  ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            // Если пациент не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text('Пациент с данным кодом не найден.'),
-                              ),
-                            );
+                              );
+                            } else {
+                              // Если пациент не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
+                              setState(() {
+                                debugMessage =
+                                    "Пациент с таким кодом не найден";
+                                isLoading = false;
+                              });
+                            }
                           }
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
@@ -197,31 +206,35 @@ class _MyHomePageState extends State<AuthPage> {
                         fontSize: 17,
                         letterSpacing: 0,
                         fontWeight: FontWeight.w300)),
-                Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    child: OutlinedButton(
-                        onPressed: () {},
-                        style: TextButton.styleFrom(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            side: BorderSide(width: 1.5, color: Colors.black),
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black),
-                        child: Row(children: [
-                          Text(
-                            'Посмотреть адрес и контакты',
-                            style: GoogleFonts.ibmPlexSans(
-                                fontSize: 20,
-                                letterSpacing: 0,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          const Icon(
-                            Icons.arrow_forward,
-                            size: 35,
-                          )
-                        ]))),
+                SizedBox(
+                  height: 20,
+                ),
+                OutlinedButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        side: BorderSide(width: 1.5, color: Colors.black),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.black),
+                    child: Row(children: [
+                      Text(
+                        'Посмотреть адрес и контакты',
+                        style: GoogleFonts.ibmPlexSans(
+                            fontSize: 16,
+                            letterSpacing: 0,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward,
+                        size: 35,
+                      )
+                    ])),
+                SizedBox(
+                  height: 20,
+                ),
                 CustomRichTextContainer(
                     richText: RichText(
                   text: TextSpan(
