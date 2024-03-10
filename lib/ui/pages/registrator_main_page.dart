@@ -149,7 +149,8 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PatientProfile(
-                                                id: '',
+                                                id: snapshot.data![index].id
+                                                    .toString(),
                                               )));
                                 },
                                 child: Card(

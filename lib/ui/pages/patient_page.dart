@@ -26,10 +26,9 @@ class _PatientProfileState extends State<PatientProfile> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
-          Container(
-            padding: EdgeInsets.all(8),
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            child: OutlinedButton(
+          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Icon(Icons.arrow_back),
+            OutlinedButton(
                 onPressed: () {},
                 style: TextButton.styleFrom(
                     minimumSize: Size.fromWidth(30),
@@ -50,10 +49,10 @@ class _PatientProfileState extends State<PatientProfile> {
                       margin: EdgeInsets.symmetric(horizontal: 8),
                       child: Icon(
                         Icons.edit,
-                        size: MediaQuery.of(context).size.width * 0.06,
+                        size: MediaQuery.of(context).size.width * 0.10,
                       ))
                 ])),
-          )
+          ])
         ],
       ),
       body: SingleChildScrollView(
@@ -64,6 +63,7 @@ class _PatientProfileState extends State<PatientProfile> {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Пациент: #${widget.id}",

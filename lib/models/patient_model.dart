@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:math';
 
 class PatientModel {
   final String? id;
@@ -7,23 +8,35 @@ class PatientModel {
   final String diagnosis;
   final String lastCondition;
   final String status;
-
-  PatientModel(
-      {this.id,
-      required this.accessCode,
-      required this.med_profile,
-      required this.diagnosis,
-      required this.lastCondition,
-      required this.status});
+  final Timestamp dateAdmission;
+  String diagnosisNote;
+  String EMKnumber;
+  int age;
+  PatientModel({
+    this.id,
+    required this.med_profile,
+    required this.diagnosis,
+    this.lastCondition = "1",
+    required this.status,
+    String? accessCode,
+    Timestamp? dateAdmission,
+    this.diagnosisNote = "",
+    this.EMKnumber = "",
+    this.age = 18,
+  })  : accessCode = generateAccessCode(),
+        dateAdmission = dateAdmission ?? Timestamp.fromDate(DateTime.now());
 
   toJson() {
     return {
-      "id": id,
       "access_code": accessCode,
       "med_profile": med_profile,
       "diagnosis": diagnosis,
       "lastCondition": lastCondition,
-      "status": status
+      "status": status,
+      "dateAdmission": dateAdmission,
+      "diagnosisNote": diagnosisNote,
+      "EMKnumber": EMKnumber,
+      "age": age
     };
   }
 
@@ -37,5 +50,25 @@ class PatientModel {
         diagnosis: data["diagnosis"],
         lastCondition: data['lastCondition'],
         status: data['status']);
+  }
+  static String generateAccessCode() {
+    // Создаем список допустимых символов
+    List<String> characters = [];
+    for (int i = 0; i < 10; i++) {
+      characters.add(i.toString()); // Добавляем цифры от 0 до 9
+    }
+    for (int char = 65; char <= 90; char++) {
+      // Добавляем заглавные буквы от A до Z
+      characters.add(String.fromCharCode(char));
+    }
+
+    // Генерируем accessCode из случайных символов
+    String accessCode = '';
+    Random random = Random();
+    for (int i = 0; i < 4; i++) {
+      accessCode += characters[random.nextInt(characters.length)];
+    }
+
+    return accessCode;
   }
 }
