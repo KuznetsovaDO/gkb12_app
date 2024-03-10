@@ -22,4 +22,12 @@ class PatientController extends GetxController {
   Future<List<PatientModel>> allPatientsFromProfile(String profile) async {
     return _patientRepo.allPatientsFromProfile(profile);
   }
+
+  Future<List<PatientModel>> getPatientsBeforeDischarged() async {
+    return _patientRepo.getPatientsBeforeDischarged();
+  }
+
+  Future<List<PatientModel>> getPatientsAfterDischarged() async {
+    return _patientRepo.getPatientsAfterDischarged();
+  }
 }

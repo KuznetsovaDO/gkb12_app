@@ -6,13 +6,15 @@ class PatientModel {
   final String med_profile;
   final String diagnosis;
   final String lastCondition;
+  final String status;
 
   PatientModel(
       {this.id,
       required this.accessCode,
       required this.med_profile,
       required this.diagnosis,
-      required this.lastCondition});
+      required this.lastCondition,
+      required this.status});
 
   toJson() {
     return {
@@ -20,7 +22,8 @@ class PatientModel {
       "access_code": accessCode,
       "med_profile": med_profile,
       "diagnosis": diagnosis,
-      "lastCondition": lastCondition
+      "lastCondition": lastCondition,
+      "status": status
     };
   }
 
@@ -32,6 +35,7 @@ class PatientModel {
         accessCode: data!["access_code"],
         med_profile: data["med_profile"],
         diagnosis: data["diagnosis"],
-        lastCondition: data['lastCondition']);
+        lastCondition: data['lastCondition'],
+        status: data['status']);
   }
 }
