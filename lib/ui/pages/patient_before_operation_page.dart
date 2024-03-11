@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_after_operation_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
@@ -117,20 +116,35 @@ class PatientBeforeOperationPage extends StatelessWidget {
         ));
   }
 
-  Future<void> changeStatus(String documentId, BuildContext context) async {
+  Future<void> changeStatus(String accessCode, BuildContext context) async {
     try {
-      // Получаем ссылку на документ с заданным documentId
-      DocumentReference documentReference =
-          FirebaseFirestore.instance.collection('patients').doc(documentId);
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('patients')
+              .where("access_code", isEqualTo: accessCode)
+              .get();
 
-      // Обновляем поля документа с помощью метода update
-      await documentReference.update({'status': 'После операции'});
+      String documentId = querySnapshot.docs.first.id;
+      if (querySnapshot.docs.isNotEmpty) {
+        // Получаем первый документ из результата запроса
+        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+            querySnapshot.docs.first;
+
+        // Получаем ссылку на документ
+        DocumentReference documentReference = documentSnapshot.reference;
+
+        // Обновляем поля документа с помощью метода update
+        await documentReference.update({'status': 'после операции'});
+      } else {
+        print('Документ с указанным access_code не найден');
+      }
+
       // ignore: use_build_context_synchronously
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => PatientAfterOperationPage(
-                    patientId: patientId,
+                    patientId: documentId,
                   )));
       print('Поле документа успешно обновлено');
     } catch (e) {

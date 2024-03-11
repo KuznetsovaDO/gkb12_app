@@ -1,19 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
-import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:gkb12_app/ui/pages/new_patient_page.dart';
 import 'package:gkb12_app/ui/pages/patient_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-bool exist = false;
-String codeValue = '';
-CollectionReference patients =
-    FirebaseFirestore.instance.collection('patients');
 
 class RegistratorMainPage extends StatefulWidget {
   const RegistratorMainPage({super.key});
@@ -24,15 +17,10 @@ class RegistratorMainPage extends StatefulWidget {
 
 class _RegistratoreMainPageState extends State<RegistratorMainPage> {
   TextEditingController textEditingController = TextEditingController();
-  // ..text = "123456";
-
-  // ignore: close_sinks
   StreamController<ErrorAnimationType>? errorController;
-  CollectionReference patients =
-      FirebaseFirestore.instance.collection('patients');
-  bool hasError = false;
-  String currentText = "";
+
   final formKey = GlobalKey<FormState>();
+
   PatientController controller = PatientController();
 
   @override
@@ -44,7 +32,6 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
   @override
   void dispose() {
     errorController!.close();
-
     super.dispose();
   }
 
@@ -67,7 +54,7 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -149,7 +136,8 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PatientProfile(
-                                                id: snapshot.data![index].id
+                                                accessCode: snapshot
+                                                    .data![index].accessCode
                                                     .toString(),
                                               )));
                                 },
@@ -386,7 +374,8 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => PatientProfile(
-                                                id: '',
+                                                accessCode: snapshot
+                                                    .data![index].accessCode,
                                               )));
                                 },
                                 child: Card(

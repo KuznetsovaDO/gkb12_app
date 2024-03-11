@@ -3,7 +3,7 @@ import 'dart:math';
 
 class PatientModel {
   final String? id;
-  final String accessCode;
+  String accessCode;
   final String med_profile;
   final String diagnosis;
   final String lastCondition;
@@ -18,13 +18,12 @@ class PatientModel {
     required this.diagnosis,
     this.lastCondition = "1",
     required this.status,
-    String? accessCode,
+    this.accessCode = "",
     Timestamp? dateAdmission,
     this.diagnosisNote = "",
     this.EMKnumber = "",
     this.age = 18,
-  })  : accessCode = generateAccessCode(),
-        dateAdmission = dateAdmission ?? Timestamp.fromDate(DateTime.now());
+  }) : dateAdmission = dateAdmission ?? Timestamp.fromDate(DateTime.now());
 
   toJson() {
     return {
@@ -68,7 +67,7 @@ class PatientModel {
     for (int i = 0; i < 4; i++) {
       accessCode += characters[random.nextInt(characters.length)];
     }
-
+    accessCode = accessCode;
     return accessCode;
   }
 }

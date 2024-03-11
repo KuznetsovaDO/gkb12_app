@@ -383,6 +383,7 @@ class _NewPatientPageState extends State<NewPatientPage> {
     // Если все обязательные поля заполнены, можно добавить пациента
     // Создаем экземпляр класса PatientModel
     PatientModel patient = PatientModel(
+      accessCode: PatientModel.generateAccessCode(),
       med_profile: selectedProfile!,
       diagnosis: selectedDiagnosis!,
       status: 'Перед операцией',

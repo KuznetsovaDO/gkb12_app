@@ -1,16 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
-import 'package:gkb12_app/ui/pages/auth_page.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientProfile extends StatefulWidget {
-  final String id;
-  const PatientProfile({Key? key, required this.id}) : super(key: key);
+  final String accessCode;
+  const PatientProfile({Key? key, required this.accessCode}) : super(key: key);
 
   @override
   State<PatientProfile> createState() => _PatientProfileState();
@@ -58,7 +53,7 @@ class _PatientProfileState extends State<PatientProfile> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(10),
         child: FutureBuilder<PatientModel>(
-          future: controller.getPatientData(widget.id),
+          future: controller.getPatientData(widget.accessCode),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.hasData) {
@@ -66,7 +61,7 @@ class _PatientProfileState extends State<PatientProfile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Пациент: #${widget.id}",
+                      "Пациент: #${snapshot.data!.id}",
                       style: Theme.of(context).textTheme.headlineLarge,
                       textAlign: TextAlign.left,
                     ),
@@ -78,7 +73,7 @@ class _PatientProfileState extends State<PatientProfile> {
                               TextFormField(
                                 enabled: false,
                                 decoration: InputDecoration(
-                                  labelText: widget.id,
+                                  labelText: snapshot.data!.accessCode,
                                   labelStyle: GoogleFonts.ibmPlexSans(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
@@ -97,7 +92,7 @@ class _PatientProfileState extends State<PatientProfile> {
                               TextFormField(
                                 enabled: false,
                                 decoration: InputDecoration(
-                                  labelText: widget.id,
+                                  labelText: "",
                                   labelStyle: GoogleFonts.ibmPlexSans(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700,
@@ -111,6 +106,31 @@ class _PatientProfileState extends State<PatientProfile> {
                           ),
                         )
                       ],
+                    ),
+                    Card(
+                      margin: EdgeInsets.symmetric(vertical: 7),
+                      elevation: 10,
+                      surfaceTintColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        side: const BorderSide(
+                          width: 1,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("Форма \"Утро\""),
+                            Text(
+                                "Результаты самообследования пациента спустя 24 часа после операции"),
+                            OutlinedButton(
+                                onPressed: () {}, child: Text("Посмотреть"))
+                          ],
+                        ),
+                      ),
                     )
                   ],
                 );

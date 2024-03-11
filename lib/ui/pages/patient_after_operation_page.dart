@@ -173,7 +173,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
           FirebaseFirestore.instance.collection('patients').doc(patientId);
 
       // Обновляем поля документа с помощью метода update
-      await documentReference.update({'Status': 'Выписан(-а)'});
+      await documentReference.update({'status': 'Выписан(-а)'});
       await documentReference.update({'ConditionAfterOperation': selected + 1});
       // ignore: use_build_context_synchronously
       Navigator.push(
