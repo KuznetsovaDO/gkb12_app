@@ -8,4 +8,8 @@ class RegistratorsController extends GetxController {
   Future<bool> checkRegistrator(String docID) async {
     return await _registratorsRepo.checkRegistrator(docID);
   }
+
+  Future<String> getRegistratorsId(String accessCode) async {
+    return await _registratorsRepo.getRegistratorsId(accessCode);
+  }
 }

@@ -22,7 +22,7 @@ class DoctorsController extends GetxController {
     return await _doctorsRepo.checkEmployee(accessCode);
   }
 
-  Future<String> getDoctorsProfile(String accessCode) async {
-    return await _doctorsRepo.getDoctorsProfile(accessCode);
+  Future<String> getDoctorsId(String accessCode) async {
+    return await _doctorsRepo.getDoctorsId(accessCode);
   }
 }

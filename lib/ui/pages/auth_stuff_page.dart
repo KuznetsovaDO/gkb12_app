@@ -126,15 +126,16 @@ class _AuthStaffPageState extends State<AuthStaffPage> {
                               // Вызываем метод checkPatient напрямую из контроллера PatientController
                               bool isDoctorValid =
                                   await controllerD.checkDoctor(codeValue);
-                              String profile = await controllerD
-                                  .getDoctorsProfile(codeValue);
+                              String doctorId =
+                                  await controllerD.getDoctorsId(codeValue);
                               if (isDoctorValid == true) {
                                 // Если пациент существует, переходим на страницу PatientBeforeOperationPage
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        DoctorMainPage(medProfile: profile),
+                                    builder: (context) => DoctorMainPage(
+                                      doctorId: doctorId,
+                                    ),
                                   ),
                                 );
                               } else {

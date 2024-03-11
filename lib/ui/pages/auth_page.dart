@@ -8,16 +8,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_before_operation_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-bool exist = false;
-String codeValue = '';
-CollectionReference patients =
-    FirebaseFirestore.instance.collection('patients');
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
-  const AuthPage({super.key, required this.title});
-
-  final String title;
+  const AuthPage({super.key});
 
   @override
   State<AuthPage> createState() => _MyHomePageState();
@@ -25,62 +19,75 @@ class AuthPage extends StatefulWidget {
 
 class _MyHomePageState extends State<AuthPage> {
   TextEditingController textEditingController = TextEditingController();
-  // ..text = "123456";
-
-  // ignore: close_sinks
   StreamController<ErrorAnimationType>? errorController;
+  bool medicalCardChecked = false;
+  bool passportChecked = false;
 
-  bool hasError = false;
-  String currentText = "";
   final formKey = GlobalKey<FormState>();
   PatientController controller = PatientController();
   String debugMessage = "";
   bool isLoading = false;
 
+  late SharedPreferences _prefs;
+
   @override
   void initState() {
-    errorController = StreamController<ErrorAnimationType>();
     super.initState();
+    _initPreferences();
   }
 
-  @override
-  void dispose() {
-    errorController!.close();
+  Future<void> _initPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      medicalCardChecked = _prefs.getBool('medicalCardChecked') ?? false;
+      passportChecked = _prefs.getBool('passportChecked') ?? false;
+    });
+  }
 
-    super.dispose();
+  Future<void> _savePreferences() async {
+    await _prefs.setBool('medicalCardChecked', medicalCardChecked);
+    await _prefs.setBool('passportChecked', passportChecked);
+  }
+
+  Future<void> _saveUserState(String userId) async {
+    await _prefs.setString('userId', userId);
+  }
+
+  Future<String?> _getUserState() async {
+    return _prefs.getString('userId');
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) CircularProgressIndicator();
     return Scaffold(
-        appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              "assets/icons/logo.jpg",
+      appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            "assets/icons/logo.jpg",
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AuthStaffPage()));
+            },
+            child: Text(
+              'Войти как сотрудник',
+              style: GoogleFonts.ibmPlexSans(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0,
+                  color: Colors.grey),
             ),
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AuthStaffPage()));
-              },
-              child: Text(
-                'Войти как сотрудник',
-                style: GoogleFonts.ibmPlexSans(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0,
-                    color: Colors.grey),
-              ),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-              child: Container(
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
             margin: const EdgeInsets.fromLTRB(15, 30, 15, 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -91,15 +98,16 @@ class _MyHomePageState extends State<AuthPage> {
                   style: Theme.of(context).textTheme.headlineLarge,
                 ),
                 Container(
-                    margin: const EdgeInsets.symmetric(vertical: 30),
-                    child: Text(
-                      'Код был ранее выдан Вам в регистратуре',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.ibmPlexSans(
-                          fontSize: 18,
-                          letterSpacing: 0,
-                          fontWeight: FontWeight.w500),
-                    )),
+                  margin: const EdgeInsets.symmetric(vertical: 30),
+                  child: Text(
+                    'Код был ранее выдан Вам в регистратуре',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.ibmPlexSans(
+                        fontSize: 18,
+                        letterSpacing: 0,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
                 Form(
                   key: formKey,
                   child: Padding(
@@ -155,71 +163,63 @@ class _MyHomePageState extends State<AuthPage> {
                   style: TextStyle(color: Color.fromARGB(255, 178, 1, 1)),
                 ),
                 Container(
-                    margin: EdgeInsets.symmetric(vertical: 20),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          if (codeValue.length < 4) {
-                            setState(() {
-                              debugMessage =
-                                  "Код должен содержать не менее 4 символов";
-                            });
-                          }
-                          // Вызываем метод checkPatient напрямую из контроллера PatientController
-                          else {
-                            setState(() {
-                              isLoading =
-                                  true; // Устанавливаем состояние загрузки в true перед вызовом checkDocument
-                            });
-                            bool isPatientValid =
-                                await controller.checkPatient(codeValue);
-                            if (isPatientValid) {
-                              // Если пациент существует, переходим на страницу PatientBeforeOperationPage
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PatientBeforeOperationPage(
-                                    patientId: codeValue,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              // Если пациент не существует, вы можете выполнить какие-то действия, например, показать сообщение об ошибке
-                              setState(() {
-                                debugMessage =
-                                    "Пациент с таким кодом не найден";
-                                isLoading = false;
-                              });
-                            }
-                          }
-                        },
-                        style: Theme.of(context).outlinedButtonTheme.style,
-                        child: Text(
-                          'Войти',
-                        ))),
-                Text('Не получили код?',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium),
-                Text('+7 999 200 10 10',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.ibmPlexSans(
-                        fontSize: 17,
-                        letterSpacing: 0,
-                        fontWeight: FontWeight.w300)),
+                  margin: EdgeInsets.symmetric(vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (codeValue.length < 4) {
+                        setState(() {
+                          debugMessage =
+                              "Код должен содержать не менее 4 символов";
+                        });
+                      } else {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        bool isPatientValid =
+                            await controller.checkPatient(codeValue);
+                        if (isPatientValid) {
+                          getUserId(codeValue, context);
+                        } else {
+                          setState(() {
+                            debugMessage = "Пациент с таким кодом не найден";
+                            isLoading = false;
+                          });
+                        }
+                      }
+                    },
+                    style: Theme.of(context).outlinedButtonTheme.style,
+                    child: Text('Войти'),
+                  ),
+                ),
+                Text(
+                  'Не получили код?',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                Text(
+                  '+7 999 200 10 10',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.ibmPlexSans(
+                      fontSize: 17,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.w300),
+                ),
                 SizedBox(
                   height: 20,
                 ),
                 OutlinedButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        side: BorderSide(width: 1.5, color: Colors.black),
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black),
-                    child: Row(children: [
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    side: BorderSide(width: 1.5, color: Colors.black),
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: Row(
+                    children: [
                       Text(
                         'Посмотреть адрес и контакты',
                         style: GoogleFonts.ibmPlexSans(
@@ -231,23 +231,38 @@ class _MyHomePageState extends State<AuthPage> {
                         Icons.arrow_forward,
                         size: 35,
                       )
-                    ])),
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
-                CustomRichTextContainer(
-                    richText: RichText(
-                  text: TextSpan(
-                    text: 'Чек-лист - что стоит взять с собой в больницу\n\n',
-                    style: GoogleFonts.ibmPlexSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                      color: Colors.black,
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  margin: EdgeInsets.symmetric(),
+                  padding: const EdgeInsets.all(18.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.5,
+                      color: Colors.grey,
                     ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '1. Документы',
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Чек-лист - что стоит взять с собой в больницу",
+                        style: GoogleFonts.ibmPlexSans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "1. Документы",
                         style: GoogleFonts.ibmPlexSans(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -255,40 +270,54 @@ class _MyHomePageState extends State<AuthPage> {
                           color: Colors.grey[800],
                         ),
                       ),
+                      CheckboxListTile(
+                        title: Text('Паспорт'),
+                        value: passportChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            passportChecked = value!;
+                            _savePreferences();
+                          });
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text('Медицинская карта'),
+                        value: medicalCardChecked,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            medicalCardChecked = value!;
+                            _savePreferences();
+                          });
+                        },
+                      ),
                     ],
                   ),
-                ))
+                ),
               ],
             ),
-          )),
-        ));
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<bool> checkDocument(String docID, BuildContext context) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('patients')
-          .where('access_code',
-              isEqualTo:
-                  docID) // Проверяем поле access_code на соответствие docID
-          .get()
-          .then((querySnapshot) {
-        if (querySnapshot.docs.isNotEmpty) {
-          // Документ с заданным access_code найден
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PatientBeforeOperationPage(
-                patientId: querySnapshot.docs.first.id,
-              ),
-            ),
-          );
-        }
-      });
-      return exist;
-    } catch (e) {
-      // If any error
-      return false;
-    }
+  Future<void> getUserId(String accessCode, BuildContext context) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('patients')
+        .where("access_code", isEqualTo: accessCode)
+        .get();
+
+    String documentId = querySnapshot.docs.first.id;
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    _prefs.setString('userId', documentId);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PatientBeforeOperationPage(
+          patientId: codeValue,
+        ),
+      ),
+    );
   }
 }

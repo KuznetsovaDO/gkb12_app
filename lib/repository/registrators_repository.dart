@@ -5,6 +5,13 @@ class RegistratorsRepository extends GetxController {
   static RegistratorsRepository get instance => Get.find();
 
   final _db = FirebaseFirestore.instance;
+  Future<String> getRegistratorsId(String access_code) async {
+    final snapshot = await _db
+        .collection('registrators')
+        .where('access_code', isEqualTo: access_code)
+        .get();
+    return snapshot.docs.first.id;
+  }
 
   Future<bool> checkRegistrator(String access_code) async {
     try {

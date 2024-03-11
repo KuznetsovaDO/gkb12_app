@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
 import 'package:gkb12_app/ui/pages/patient_form_for_staff.dart';
@@ -22,33 +23,39 @@ class _PatientProfileState extends State<PatientProfile> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
-          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Icon(Icons.arrow_back),
-            OutlinedButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                    minimumSize: Size.fromWidth(30),
-                    textStyle: Theme.of(context).textTheme.labelMedium,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    side: BorderSide(width: 2, color: Colors.black),
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(
-                    'Редактировать',
-                  ),
-                  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: Icon(
-                        Icons.edit,
-                        size: MediaQuery.of(context).size.width * 0.10,
-                      ))
-                ])),
-          ])
+          Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(Icons.arrow_back),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2,
+                      child: OutlinedButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                              textStyle:
+                                  Theme.of(context).textTheme.labelMedium,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              side: BorderSide(width: 2, color: Colors.black),
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.black),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Редактировать',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                Icon(
+                                  Icons.edit,
+                                )
+                              ])),
+                    )
+                  ]))
         ],
       ),
       body: SingleChildScrollView(

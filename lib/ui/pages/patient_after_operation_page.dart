@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientAfterOperationPage extends StatefulWidget {
   final String patientId;
@@ -30,7 +31,10 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                   Icons.arrow_back,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Future<void> clearUserId() async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.remove('userId');
+                  }
                 })),
         actions: [
           IconButton(
@@ -65,25 +69,19 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
                     isSmiles: true,
                   ),
                   Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 60,
-                            child: Text(
-                              'Жалоб нет',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
+                          Text(
+                            'Жалоб\nнет',
+                            textAlign: TextAlign.left,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
-                          SizedBox(
-                            width: 60,
-                            child: Text(
-                              'Очень плохо',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
+                          Text(
+                            'Очень\nплохо',
+                            textAlign: TextAlign.right,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       )),

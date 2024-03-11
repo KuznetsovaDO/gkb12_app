@@ -37,12 +37,12 @@ class DoctorsRepository extends GetxController {
     return doctorsData;
   }
 
-  Future<String> getDoctorsProfile(String access_code) async {
+  Future<String> getDoctorsId(String access_code) async {
     final snapshot = await _db
         .collection('doctors')
         .where('access_code', isEqualTo: access_code)
         .get();
-    return snapshot.docs.first["med_profile"];
+    return snapshot.docs.first.id;
   }
 
   //проверяет наличие доктора с access_code

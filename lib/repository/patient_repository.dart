@@ -39,9 +39,9 @@ class PatientRepository extends GetxController {
       String profile) async {
     final snapshot = await _db
         .collection("patients")
+        .where("status", whereNotIn: ["перед операцией", 'после операции'])
         .where("med_profile", isEqualTo: profile)
-        .where("status",
-            whereNotIn: ["перед операцией", 'после операции']).get();
+        .get();
     final patientData =
         snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
     return patientData;

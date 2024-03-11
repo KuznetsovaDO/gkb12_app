@@ -116,7 +116,7 @@ class _PatientDischargedPageState extends State<PatientDischargedPage> {
                           child: Text(
                             'Оценить качество обслуживания',
                             style: GoogleFonts.ibmPlexSans(
-                                fontSize: 20,
+                                fontSize: 17,
                                 letterSpacing: 0,
                                 fontWeight: FontWeight.w500),
                           ))),

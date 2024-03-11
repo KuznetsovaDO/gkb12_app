@@ -2,21 +2,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
-import 'package:gkb12_app/ui/pages/new_patient_page.dart';
 import 'package:gkb12_app/ui/pages/patient_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DoctorMainPage extends StatefulWidget {
-  final String medProfile;
-  const DoctorMainPage({super.key, required this.medProfile});
+  final String? doctorId;
+  const DoctorMainPage({Key? key, required this.doctorId}) : super(key: key);
 
   @override
   State<DoctorMainPage> createState() => _DoctorMainPageState();
 }
 
 class _DoctorMainPageState extends State<DoctorMainPage> {
+  late String medProfile = '';
   TextEditingController textEditingController = TextEditingController();
   StreamController<ErrorAnimationType>? errorController;
 
@@ -28,6 +30,27 @@ class _DoctorMainPageState extends State<DoctorMainPage> {
   void initState() {
     errorController = StreamController<ErrorAnimationType>();
     super.initState();
+    fetchMedProfile();
+  }
+
+  Future<void> fetchMedProfile() async {
+    try {
+      // Получаем документ с заданным doctorId
+      final doctorDoc = await FirebaseFirestore.instance
+          .collection('doctors')
+          .doc(widget.doctorId)
+          .get();
+
+      // Извлекаем значение med_profile из документа
+      final medProfileValue = doctorDoc.get('med_profile');
+
+      // Устанавливаем значение medProfile в состоянии
+      setState(() {
+        medProfile = medProfileValue ?? '';
+      });
+    } catch (e) {
+      print('Error fetching med profile: $e');
+    }
   }
 
   @override
@@ -43,15 +66,22 @@ class _DoctorMainPageState extends State<DoctorMainPage> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(
-          'Выйти из профиля',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.ibmPlexSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0,
-              color: Colors.grey),
-        ),
+        title: TextButton(
+            onPressed: () {
+              Future<void> clearUserId() async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('userId');
+              }
+            },
+            child: Text(
+              'Выйти из профиля',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ibmPlexSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0,
+                  color: Colors.grey),
+            )),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -75,7 +105,7 @@ class _DoctorMainPageState extends State<DoctorMainPage> {
                             letterSpacing: 0),
                       ),
                       Text(
-                        "Профиль: регистрация",
+                        "Профиль: ${medProfile} ",
                         textAlign: TextAlign.left,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
@@ -84,34 +114,9 @@ class _DoctorMainPageState extends State<DoctorMainPage> {
                   Icon(Icons.notifications)
                 ],
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => NewPatientPage()));
-                  },
-                  child: Row(
-                    children: [
-                      Text(
-                        "Добавить пациента",
-                        style: GoogleFonts.ibmPlexSans(
-                            fontSize: 18,
-                            letterSpacing: 0,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white),
-                      ),
-                      Icon(Icons.add)
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.center,
-                  ),
-                ),
-              ),
               FutureBuilder<List<PatientModel>>(
                 future: controller
-                    .getPatientsFromProfileBeforeDischarged(widget.medProfile),
+                    .getPatientsFromProfileBeforeDischarged(medProfile),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {
@@ -360,7 +365,7 @@ class _DoctorMainPageState extends State<DoctorMainPage> {
               ),
               FutureBuilder<List<PatientModel>>(
                 future: controller
-                    .getPatientsFromProfileAfterDischarged(widget.medProfile),
+                    .getPatientsFromProfileAfterDischarged(medProfile),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasData) {

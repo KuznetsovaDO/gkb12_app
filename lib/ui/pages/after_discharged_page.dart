@@ -1,9 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
-import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
-import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
 
 class AfterDischargedPage extends StatefulWidget {
   @override
@@ -40,8 +36,14 @@ class _AfterDischargedPageState extends State<AfterDischargedPage> {
                   ElevatedButton(
                       style: Theme.of(context).outlinedButtonTheme.style,
                       onPressed: () {},
-                      child: Text("Ваша оценка качества медицинской помощи")),
-                  Text("Пожалуйста, проидите форму обратной связи")
+                      child: Text(
+                        "Ваша оценка качества медицинской помощи",
+                        textAlign: TextAlign.center,
+                      )),
+                  Text(
+                    "Пожалуйста, проидите форму обратной связи",
+                    textAlign: TextAlign.center,
+                  )
                 ],
               ))),
     );

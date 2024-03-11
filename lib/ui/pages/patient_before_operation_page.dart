@@ -1,24 +1,37 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_after_operation_page.dart';
 import 'package:gkb12_app/ui/widgets/custom_richtext_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientBeforeOperationPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
-  final String patientId;
+  final String? patientId;
   PatientBeforeOperationPage({required this.patientId});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Статус: перед операцией'),
+          title: Text('Статус: перед операцией',
+              style: GoogleFonts.ibmPlexSans(
+                  fontSize: 18, letterSpacing: 0, fontWeight: FontWeight.w500)),
           leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    bool? result = await showExitProfileDialog(context);
+                    if (result != null && result) {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.remove('userId');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AuthPage(),
+                          ));
+                    }
                   })),
           actions: [
             IconButton(
@@ -41,7 +54,7 @@ class PatientBeforeOperationPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                         onPressed: () {
-                          changeStatus(patientId, context);
+                          changeStatus(patientId!, context);
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
                         child: Row(
@@ -101,10 +114,10 @@ class PatientBeforeOperationPage extends StatelessWidget {
                         text:
                             '1. Перед операцией вам нужно сдать все необходимые анализы',
                         style: GoogleFonts.ibmPlexSans(
-                          fontSize: 18,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0,
-                          color: Colors.grey[800],
+                          color: Colors.grey[500],
                         ),
                       ),
                     ],
@@ -116,39 +129,59 @@ class PatientBeforeOperationPage extends StatelessWidget {
         ));
   }
 
-  Future<void> changeStatus(String accessCode, BuildContext context) async {
+  Future<void> changeStatus(String patientId, BuildContext context) async {
     try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('patients')
-              .where("access_code", isEqualTo: accessCode)
-              .get();
+      // Получаем ссылку на документ по patientId
+      DocumentReference documentReference =
+          FirebaseFirestore.instance.collection('patients').doc(patientId);
 
-      String documentId = querySnapshot.docs.first.id;
-      if (querySnapshot.docs.isNotEmpty) {
-        // Получаем первый документ из результата запроса
-        DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-            querySnapshot.docs.first;
+      // Получаем сам документ
+      DocumentSnapshot<Object?> documentSnapshot =
+          await documentReference.get();
 
-        // Получаем ссылку на документ
-        DocumentReference documentReference = documentSnapshot.reference;
-
-        // Обновляем поля документа с помощью метода update
+      // Проверяем, существует ли документ
+      if (documentSnapshot.exists) {
+        // Обновляем поле 'status' документа с помощью метода update
         await documentReference.update({'status': 'после операции'});
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PatientAfterOperationPage(
+                      patientId: patientId,
+                    )));
+        print('Статус документа успешно обновлен');
       } else {
-        print('Документ с указанным access_code не найден');
+        print('Документ с указанным patientId не найден');
       }
-
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PatientAfterOperationPage(
-                    patientId: documentId,
-                  )));
-      print('Поле документа успешно обновлено');
-    } catch (e) {
-      print('Ошибка при обновлении поля документа: $e');
+    } catch (error) {
+      print('Произошла ошибка при обновлении статуса: $error');
     }
+  }
+
+  Future<bool?> showExitProfileDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Хотите выйти из профиля?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    true); // Возвращает true, если пользователь выбрал "Да"
+              },
+              child: Text('Да'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    false); // Возвращает false, если пользователь выбрал "Нет"
+              },
+              child: Text('Нет'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

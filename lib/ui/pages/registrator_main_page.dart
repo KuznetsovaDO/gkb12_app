@@ -7,6 +7,7 @@ import 'package:gkb12_app/ui/pages/patient_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistratorMainPage extends StatefulWidget {
   const RegistratorMainPage({super.key});
@@ -42,15 +43,22 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text(
-          'Выйти из профиля',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.ibmPlexSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0,
-              color: Colors.grey),
-        ),
+        title: TextButton(
+            onPressed: () {
+              Future<void> clearUserId() async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('userId');
+              }
+            },
+            child: Text(
+              'Выйти из профиля',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.ibmPlexSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0,
+                  color: Colors.grey),
+            )),
       ),
       body: SingleChildScrollView(
         child: Padding(

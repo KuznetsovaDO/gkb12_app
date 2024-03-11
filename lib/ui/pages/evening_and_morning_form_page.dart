@@ -20,6 +20,7 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
   bool dizziness = false;
   int selectedCondition = 0;
   int selectedPain = 0;
+  late TextEditingController _controller;
   final Map<String, String> someMap = {
     "condition": '1',
     "painIntensity": '1',
@@ -28,9 +29,16 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
     "bleeding": "true",
     "nausea": "true"
   };
+  double _temperature = 36.6;
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: _temperature.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
+    int count = 0;
     return Scaffold(
       appBar: AppBar(
         title:
@@ -98,21 +106,44 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
                         'Пожалуйста, укажите вашу текущую температуру тела',
                         style: Theme.of(context).textTheme.bodyMedium,
                       )),
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        height: 50,
-                        width: 200,
-                        child: TextField(
-                            onChanged: (value) => strTemperature = value,
-                            onEditingComplete: () {
-                              someMap["temperature"] = strTemperature;
-                            },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Температура тела',
-                            )),
-                      )),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              hintText: 'Введите температуру',
+                              suffixText: '°C',
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          controller: _controller,
+                          keyboardType:
+                              TextInputType.numberWithOptions(decimal: true),
+                          onChanged: (value) {
+                            setState(() {
+                              _temperature =
+                                  double.tryParse(value) ?? _temperature;
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      ElevatedButton(
+                        onPressed: () {
+                          _incrementTemperature(0.1);
+                        },
+                        child: Icon(Icons.arrow_upward),
+                      ),
+                      SizedBox(width: 5),
+                      ElevatedButton(
+                        onPressed: () {
+                          _incrementTemperature(-0.1);
+                        },
+                        child: Icon(Icons.arrow_downward),
+                      ),
+                    ],
+                  ),
                   Container(
                       margin: EdgeInsets.only(top: 10, bottom: 20),
                       child: const Text(
@@ -230,6 +261,19 @@ class _EveningFormPageState extends State<EveningAndMorningFormPage> {
     } catch (e) {
       print('Ошибка при обновлении поля документа: $e');
     }
+  }
+
+  void _incrementTemperature(double delta) {
+    setState(() {
+      _temperature += delta;
+      _controller.text = _temperature.toStringAsFixed(1);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   void handleToggleButtonsIndexChangedSmiles(int index) {
