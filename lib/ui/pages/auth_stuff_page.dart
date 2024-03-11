@@ -5,6 +5,7 @@ import 'package:gkb12_app/ui/pages/registrator_main_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/doctor_main_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 bool exist = false;
 String codeValue = '';
@@ -129,7 +130,9 @@ class _AuthStaffPageState extends State<AuthStaffPage> {
                               String doctorId =
                                   await controllerD.getDoctorsId(codeValue);
                               if (isDoctorValid == true) {
-                                // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                                SharedPreferences _prefs =
+                                    await SharedPreferences.getInstance();
+                                _prefs.setString('userId', codeValue);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -148,8 +151,11 @@ class _AuthStaffPageState extends State<AuthStaffPage> {
                             } else if (codeValue[0] == "R") {
                               bool isRegValid =
                                   await controllerR.checkRegistrator(codeValue);
+
                               if (isRegValid) {
-                                // Если пациент существует, переходим на страницу PatientBeforeOperationPage
+                                SharedPreferences _prefs =
+                                    await SharedPreferences.getInstance();
+                                _prefs.setString('userId', codeValue);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

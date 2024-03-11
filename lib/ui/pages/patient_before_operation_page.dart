@@ -8,8 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientBeforeOperationPage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
-  final String? patientId;
-  PatientBeforeOperationPage({required this.patientId});
+  final String? accessCode;
+  PatientBeforeOperationPage({required this.accessCode});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +54,7 @@ class PatientBeforeOperationPage extends StatelessWidget {
                     margin: EdgeInsets.symmetric(vertical: 20),
                     child: ElevatedButton(
                         onPressed: () {
-                          changeStatus(patientId!, context);
+                          changeStatus(accessCode!, context);
                         },
                         style: Theme.of(context).outlinedButtonTheme.style,
                         child: Row(
@@ -143,12 +143,6 @@ class PatientBeforeOperationPage extends StatelessWidget {
       if (documentSnapshot.exists) {
         // Обновляем поле 'status' документа с помощью метода update
         await documentReference.update({'status': 'после операции'});
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PatientAfterOperationPage(
-                      patientId: patientId,
-                    )));
         print('Статус документа успешно обновлен');
       } else {
         print('Документ с указанным patientId не найден');

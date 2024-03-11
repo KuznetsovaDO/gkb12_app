@@ -310,12 +310,12 @@ class _MyHomePageState extends State<AuthPage> {
 
     String documentId = querySnapshot.docs.first.id;
     SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString('userId', documentId);
+    _prefs.setString('userId', accessCode);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => PatientBeforeOperationPage(
-          patientId: codeValue,
+          accessCode: codeValue,
         ),
       ),
     );

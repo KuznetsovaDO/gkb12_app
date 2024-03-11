@@ -42,19 +42,19 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         userId = storedUserId;
       });
-      await getStatus(userId!);
+      // await getStatus(userId!);
     }
   }
 
-  Future<void> getStatus(String userId) async {
-    final docSnapshot = await FirebaseFirestore.instance
-        .collection('patients')
-        .doc(userId)
-        .get();
-    setState(() {
-      status = docSnapshot['status'];
-    });
-  }
+  // Future<void> getStatus(String userId) async {
+  //   final docSnapshot = await FirebaseFirestore.instance
+  //       .collection('patients')
+  //       .doc(userId)
+  //       .get();
+  //   setState(() {
+  //     status = docSnapshot['status'];
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +109,6 @@ class _MyAppState extends State<MyApp> {
                   )
                 : userId!.startsWith('R')
                     ? RegistratorMainPage()
-                    : PatientBeforeOperationPage(patientId: userId));
+                    : PatientBeforeOperationPage(accessCode: userId));
   }
 }
