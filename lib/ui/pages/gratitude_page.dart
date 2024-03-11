@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/ui/pages/after_discharged_page.dart';
-import 'package:gkb12_app/ui/pages/evening_and_morning_form_page.dart';
 
-import 'package:gkb12_app/ui/pages/patient_after_operation_page.dart';
-
-import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
 import 'package:gkb12_app/ui/pages/state_change_form.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GratitudePage extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
@@ -63,9 +60,22 @@ class GratitudePage extends StatelessWidget {
                     'Далее',
                   ),
                 )),
+            ElevatedButton(
+              onPressed: () => _launchPhoneCall("112"),
+              child: Text('Позвонить 112'),
+            )
           ],
         ),
       )),
     );
+  }
+
+  _launchPhoneCall(String phoneNumber) async {
+    final url = 'tel:$phoneNumber';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Не удалось запустить приложение для звонков';
+    }
   }
 }

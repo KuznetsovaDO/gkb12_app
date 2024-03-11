@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
+import 'package:gkb12_app/ui/pages/patient_form_for_staff.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PatientProfile extends StatefulWidget {
@@ -123,11 +124,39 @@ class _PatientProfileState extends State<PatientProfile> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text("Форма \"Утро\""),
+                            Text("Форма \"Вечер\""),
                             Text(
                                 "Результаты самообследования пациента спустя 24 часа после операции"),
                             OutlinedButton(
-                                onPressed: () {}, child: Text("Посмотреть"))
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                    (states) {
+                                      if (snapshot.data != null &&
+                                          snapshot.data!.eveningForm != null &&
+                                          snapshot
+                                              .data!.eveningForm!.isNotEmpty) {
+                                        // Возвращаем синий цвет, если eveningForm не пустое
+                                        return Colors.blue;
+                                      } else {
+                                        // Возвращаем серый цвет в других случаях
+                                        return Colors.grey;
+                                      }
+                                    },
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PatientFormForStaffPage(
+                                                patientId: snapshot.data!.id,
+                                                someMap:
+                                                    snapshot.data!.eveningForm,
+                                              )));
+                                },
+                                child: Text("Посмотреть"))
                           ],
                         ),
                       ),

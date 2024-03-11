@@ -24,11 +24,24 @@ class PatientRepository extends GetxController {
     return patientData;
   }
 
-  Future<List<PatientModel>> allPatientsFromProfile(String profile) async {
+  Future<List<PatientModel>> allPatientsFromProfileBeforeDischarged(
+      String profile) async {
     final snapshot = await _db
         .collection("patients")
         .where("med_profile", isEqualTo: profile)
-        .get();
+        .where("status", whereIn: ["перед операцией", 'после операции']).get();
+    final patientData =
+        snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
+    return patientData;
+  }
+
+  Future<List<PatientModel>> allPatientsFromProfileAfterDischarged(
+      String profile) async {
+    final snapshot = await _db
+        .collection("patients")
+        .where("med_profile", isEqualTo: profile)
+        .where("status",
+            whereNotIn: ["перед операцией", 'после операции']).get();
     final patientData =
         snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
     return patientData;

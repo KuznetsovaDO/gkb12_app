@@ -19,8 +19,14 @@ class PatientController extends GetxController {
     return await _patientRepo.checkPatient(docID);
   }
 
-  Future<List<PatientModel>> allPatientsFromProfile(String profile) async {
-    return _patientRepo.allPatientsFromProfile(profile);
+  Future<List<PatientModel>> getPatientsFromProfileBeforeDischarged(
+      String profile) async {
+    return _patientRepo.allPatientsFromProfileBeforeDischarged(profile);
+  }
+
+  Future<List<PatientModel>> getPatientsFromProfileAfterDischarged(
+      String profile) async {
+    return _patientRepo.allPatientsFromProfileAfterDischarged(profile);
   }
 
   Future<List<PatientModel>> getPatientsBeforeDischarged() async {

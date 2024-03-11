@@ -12,6 +12,9 @@ class PatientModel {
   String diagnosisNote;
   String EMKnumber;
   int age;
+  Map<String, String>? eveningForm; // Необязательное поле eveningForm
+
+  // Конструктор класса
   PatientModel({
     this.id,
     required this.med_profile,
@@ -19,13 +22,15 @@ class PatientModel {
     this.lastCondition = "1",
     required this.status,
     this.accessCode = "",
+    this.eveningForm, // Опциональный параметр
     Timestamp? dateAdmission,
     this.diagnosisNote = "",
     this.EMKnumber = "",
     this.age = 18,
   }) : dateAdmission = dateAdmission ?? Timestamp.fromDate(DateTime.now());
 
-  toJson() {
+  // Метод для сериализации объекта в формат JSON
+  Map<String, dynamic> toJson() {
     return {
       "access_code": accessCode,
       "med_profile": med_profile,
@@ -35,39 +40,49 @@ class PatientModel {
       "dateAdmission": dateAdmission,
       "diagnosisNote": diagnosisNote,
       "EMKnumber": EMKnumber,
-      "age": age
+      "age": age,
+      "eveningForm":
+          eveningForm, // Включаем eveningForm в JSON, если он существует
     };
   }
 
+  // Фабричный метод для создания объекта из снимка документа Firestore
   factory PatientModel.fromSnapshot(
       DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data();
+    final eveningFormData = data?['eveningForm'];
+
+    // Проверяем, существует ли eveningForm и содержит ли элементы
+    final Map<String, String>? eveningForm =
+        (eveningFormData is Map && eveningFormData.isNotEmpty)
+            ? eveningFormData.cast<String, String>()
+            : null;
+
     return PatientModel(
-        id: document.id,
-        accessCode: data!["access_code"],
-        med_profile: data["med_profile"],
-        diagnosis: data["diagnosis"],
-        lastCondition: data['lastCondition'],
-        status: data['status']);
+      id: document.id,
+      accessCode: data?["access_code"] ?? "",
+      med_profile: data?["med_profile"] ?? "",
+      diagnosis: data?["diagnosis"] ?? "",
+      lastCondition: data?['lastCondition'] ?? "1",
+      status: data?['status'] ?? "",
+      eveningForm: eveningForm,
+    );
   }
+
+  // Метод для генерации случайного accessCode
   static String generateAccessCode() {
-    // Создаем список допустимых символов
     List<String> characters = [];
     for (int i = 0; i < 10; i++) {
-      characters.add(i.toString()); // Добавляем цифры от 0 до 9
+      characters.add(i.toString());
     }
     for (int char = 65; char <= 90; char++) {
-      // Добавляем заглавные буквы от A до Z
       characters.add(String.fromCharCode(char));
     }
-
-    // Генерируем accessCode из случайных символов
     String accessCode = '';
     Random random = Random();
     for (int i = 0; i < 4; i++) {
       accessCode += characters[random.nextInt(characters.length)];
     }
-    accessCode = accessCode;
     return accessCode;
   }
 }

@@ -336,7 +336,14 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                                   ),
                                 ));
                           },
-                        )
+                        ),
+                        Divider(
+                          color: Colors.red,
+                          thickness: 2,
+                          height: 20,
+                          indent: 20,
+                          endIndent: 20,
+                        ),
                       ]);
                     } else if (snapshot.hasError) {
                       return Center(
@@ -348,13 +355,6 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                   }
                   return Container();
                 },
-              ),
-              Divider(
-                color: Colors.red,
-                thickness: 2,
-                height: 20,
-                indent: 20,
-                endIndent: 20,
               ),
               FutureBuilder<List<PatientModel>>(
                 future: controller.getPatientsAfterDischarged(),
@@ -582,7 +582,7 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
                       );
                     }
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    return Container();
                   }
                   return Container();
                 },
