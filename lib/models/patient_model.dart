@@ -12,7 +12,8 @@ class PatientModel {
   String diagnosisNote;
   String EMKnumber;
   int age;
-  Map<String, String>? eveningForm; // Необязательное поле eveningForm
+  Map<String, String>? eveningForm;
+  Map<String, String>? morningForm;
 
   // Конструктор класса
   PatientModel({
@@ -22,7 +23,8 @@ class PatientModel {
     this.lastCondition = "1",
     required this.status,
     this.accessCode = "",
-    this.eveningForm, // Опциональный параметр
+    this.eveningForm,
+    this.morningForm, // Опциональный параметр
     Timestamp? dateAdmission,
     this.diagnosisNote = "",
     this.EMKnumber = "",
@@ -41,8 +43,8 @@ class PatientModel {
       "diagnosisNote": diagnosisNote,
       "EMKnumber": EMKnumber,
       "age": age,
-      "eveningForm":
-          eveningForm, // Включаем eveningForm в JSON, если он существует
+      "eveningForm": eveningForm,
+      "morningForm": morningForm,
     };
   }
 
@@ -51,6 +53,7 @@ class PatientModel {
       DocumentSnapshot<Map<String, dynamic>> document) {
     final data = document.data();
     final eveningFormData = data?['eveningForm'];
+    final morningFormData = data?['morningForm'];
 
     // Проверяем, существует ли eveningForm и содержит ли элементы
     final Map<String, String>? eveningForm =
@@ -58,6 +61,10 @@ class PatientModel {
             ? eveningFormData.cast<String, String>()
             : null;
 
+    final Map<String, String>? morningForm =
+        (eveningFormData is Map && morningFormData.isNotEmpty)
+            ? eveningFormData.cast<String, String>()
+            : null;
     return PatientModel(
       id: document.id,
       accessCode: data?["access_code"] ?? "",
@@ -66,6 +73,7 @@ class PatientModel {
       lastCondition: data?['lastCondition'] ?? "1",
       status: data?['status'] ?? "",
       eveningForm: eveningForm,
+      morningForm: morningForm,
     );
   }
 

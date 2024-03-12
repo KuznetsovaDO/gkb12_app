@@ -140,31 +140,24 @@ class _NewPatientPageState extends State<NewPatientPage> {
                     color: selectedDiagnosisError == true
                         ? Colors.red
                         : Colors.black)),
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey),
-              ),
-              child: DropdownButton<String>(
-                isExpanded: true,
-                value: selectedDiagnosis,
-                onChanged: (String? value) {
-                  setState(() {
-                    selectedDiagnosis = value;
-                  });
-                },
-                items: diagnoses.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 8),
-                      child: Text(value),
-                    ),
-                  );
-                }).toList(),
-              ),
+            DropdownButtonFormField<String>(
+              style: GoogleFonts.ibmPlexSans(
+                  fontSize: 15,
+                  letterSpacing: 0,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black),
+              value: selectedDiagnosis,
+              onChanged: (String? value) {
+                setState(() {
+                  selectedDiagnosis = value;
+                });
+              },
+              items: diagnoses.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
             ),
             SizedBox(height: 10),
             Text("Примечание"),
@@ -383,15 +376,16 @@ class _NewPatientPageState extends State<NewPatientPage> {
     // Если все обязательные поля заполнены, можно добавить пациента
     // Создаем экземпляр класса PatientModel
     PatientModel patient = PatientModel(
-      accessCode: PatientModel.generateAccessCode(),
-      med_profile: selectedProfile!,
-      diagnosis: selectedDiagnosis!,
-      status: 'Перед операцией',
-      dateAdmission: Timestamp.fromDate(selectedDate!),
-      diagnosisNote: noteController.text,
-      EMKnumber: EMK,
-      age: age,
-    );
+        accessCode: PatientModel.generateAccessCode(),
+        med_profile: selectedProfile!,
+        diagnosis: selectedDiagnosis!,
+        status: 'Перед операцией',
+        dateAdmission: Timestamp.fromDate(selectedDate!),
+        diagnosisNote: noteController.text,
+        EMKnumber: EMK,
+        age: age,
+        eveningForm: null,
+        morningForm: null);
 
     try {
       // Преобразуем объект PatientModel в JSON

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gkb12_app/ui/pages/patient_discharged_page.dart';
 import 'package:gkb12_app/ui/widgets/patient_condition_widget.dart';
@@ -23,7 +24,21 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
     List<bool> _isSelected = [false, true];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Статус: после операции'),
+        title: TextButton(
+          child: Text("Выйти из профиля"),
+          onPressed: () async {
+            bool? result = await showExitProfileDialog(context);
+            if (result != null && result) {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.remove('userId');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AuthPage(),
+                  ));
+            }
+          },
+        ),
         leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
@@ -51,6 +66,7 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
+                  Text('Статус: после операции'),
                   Padding(
                       padding: EdgeInsets.fromLTRB(0, 25, 0, 10),
                       child: Align(
@@ -192,5 +208,32 @@ class _PatientAfterOperationPageState extends State<PatientAfterOperationPage> {
     setState(() {
       selected = index;
     });
+  }
+
+  Future<bool?> showExitProfileDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Хотите выйти из профиля?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    true); // Возвращает true, если пользователь выбрал "Да"
+              },
+              child: Text('Да'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    false); // Возвращает false, если пользователь выбрал "Нет"
+              },
+              child: Text('Нет'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -95,7 +95,10 @@ class _MyHomePageState extends State<AuthPage> {
                 Text(
                   'Пожалуйста, введите код пациента',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineLarge,
+                  style: GoogleFonts.ibmPlexSans(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0),
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 30),

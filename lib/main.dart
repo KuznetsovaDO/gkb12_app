@@ -12,7 +12,12 @@ import 'package:google_fonts/google_fonts.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: FirebaseOptions(
+      apiKey: "AIzaSyBZg3dL1IdOoV-H2t1qMm41jWFl1a7frW8",
+      projectId: "gkb12-13981",
+      appId: '1:871841936359:android:541eb1820e65cf9f648342',
+      messagingSenderId: '',
+    ),
   );
 
   runApp(const MyApp());

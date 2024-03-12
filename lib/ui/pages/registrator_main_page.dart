@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gkb12_app/controllers/patient_controller.dart';
 import 'package:gkb12_app/models/patient_model.dart';
+import 'package:gkb12_app/ui/pages/auth_page.dart';
 import 'package:gkb12_app/ui/pages/new_patient_page.dart';
 import 'package:gkb12_app/ui/pages/patient_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -44,10 +45,16 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: TextButton(
-            onPressed: () {
-              Future<void> clearUserId() async {
+            onPressed: () async {
+              bool? result = await showExitProfileDialog(context);
+              if (result != null && result) {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.remove('userId');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AuthPage(),
+                    ));
               }
             },
             child: Text(
@@ -599,6 +606,33 @@ class _RegistratoreMainPageState extends State<RegistratorMainPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<bool?> showExitProfileDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Хотите выйти из профиля?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    true); // Возвращает true, если пользователь выбрал "Да"
+              },
+              child: Text('Да'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(
+                    false); // Возвращает false, если пользователь выбрал "Нет"
+              },
+              child: Text('Нет'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

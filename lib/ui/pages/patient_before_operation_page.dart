@@ -132,21 +132,27 @@ class PatientBeforeOperationPage extends StatelessWidget {
   Future<void> changeStatus(String patientId, BuildContext context) async {
     try {
       // Получаем ссылку на документ по patientId
-      DocumentReference documentReference =
-          FirebaseFirestore.instance.collection('patients').doc(patientId);
+      QuerySnapshot<Object?> querySnapshot = await FirebaseFirestore.instance
+          .collection('patients')
+          .where('access_code', isEqualTo: patientId)
+          .get();
 
-      // Получаем сам документ
-      DocumentSnapshot<Object?> documentSnapshot =
-          await documentReference.get();
-
-      // Проверяем, существует ли документ
-      if (documentSnapshot.exists) {
+      for (QueryDocumentSnapshot<Object?> documentSnapshot
+          in querySnapshot.docs) {
         // Обновляем поле 'status' документа с помощью метода update
-        await documentReference.update({'status': 'после операции'});
+        await documentSnapshot.reference.update({'status': 'после операции'});
         print('Статус документа успешно обновлен');
-      } else {
-        print('Документ с указанным patientId не найден');
       }
+
+      // Переход на страницу после операции для пациентов
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PatientAfterOperationPage(
+            patientId: patientId,
+          ),
+        ),
+      );
     } catch (error) {
       print('Произошла ошибка при обновлении статуса: $error');
     }
