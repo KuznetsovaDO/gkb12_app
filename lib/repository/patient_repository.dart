@@ -47,23 +47,6 @@ class PatientRepository extends GetxController {
     return patientData;
   }
 
-  Future<List<PatientModel>> getPatientsBeforeDischarged() async {
-    final snapshot = await _db
-        .collection("patients")
-        .where("status", whereIn: ["перед операцией", 'после операции']).get();
-    final patientData =
-        snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
-    return patientData;
-  }
-
-  Future<List<PatientModel>> getPatientsAfterDischarged() async {
-    final snapshot = await _db.collection("patients").where("status",
-        whereNotIn: ["перед операцией", 'после операции']).get();
-    final patientData =
-        snapshot.docs.map((e) => PatientModel.fromSnapshot(e)).toList();
-    return patientData;
-  }
-
   Future<bool> checkPatient(String docID) async {
     try {
       final querySnapshot = await _db
